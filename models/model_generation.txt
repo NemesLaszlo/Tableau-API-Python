@@ -1,0 +1,5 @@
+This document goes through the steps to generate the ts_api.py, the schema for the Tableau API
+
+1. Download the REST API schema from Tableau, from: https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api_concepts_schema.htm
+2. Run the following command: xsdata ts-api_x_xx.xsd (x_xx the api version)
+    If 'xsdata' is not available, install the package: pip install xsdata[cli]
