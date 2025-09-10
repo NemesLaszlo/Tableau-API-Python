@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Tuple, Type, TypeVar, Any, Union
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from io import StringIO, BytesIO
+from io import BytesIO
 import inspect
 from dataclasses import fields, is_dataclass
 from xsdata.formats.dataclass.context import XmlContext
@@ -14,11 +14,13 @@ from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 
-from .models.ts_api import TsResponse, TsRequest
-from .models.tableau_session import TableauSession
-from .exceptions.tableau_api_version_exception import TableauApiVersionException
-from .exceptions.tableau_online_not_supported_exception import TableauOnlineNotSupportedException
-from .exceptions.tableau_request_exception import TableauRequestException
+from attributes.api_version_attribute import ApiVersionAttribute
+from attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
+from models.ts_api import SiteType, TableauCredentialsType, TsResponse, TsRequest, UserType
+from models.tableau_session import TableauSession
+from exceptions.tableau_api_version_exception import TableauApiVersionException
+from exceptions.tableau_online_not_supported_exception import TableauOnlineNotSupportedException
+from exceptions.tableau_request_exception import TableauRequestException
 
 T = TypeVar('T')
 T2 = TypeVar('T2')
@@ -34,6 +36,11 @@ class TableauApiClient:
     _MAX_VERSION = (3, 23)
     _MIN_VERSION_FOR_ENDPOINTS: Dict[str, Tuple[int, int]] = {}
     _ON_PREMISE_ONLY_ENDPOINTS: List[str] = []
+
+    _TABLEAU_ONLINE_REGEX = re.compile(
+        r"(?:\.online)?\.tableau\.com$",  # matches any Tableau Online/Cloud URL ending with ".online.tableau.com" or "tableau.com"
+        re.IGNORECASE
+    )
     
     @classmethod
     def _initialize_endpoint_metadata(cls):
@@ -101,7 +108,14 @@ class TableauApiClient:
         except (ValueError, IndexError):
             raise ValueError(f"'api_version' parameter cannot be converted to Version object")
         
-        self.timeout = timeout or self._DEFAULT_TIMEOUT
+        if timeout is None:
+            self.timeout = self._DEFAULT_TIMEOUT
+        elif isinstance(timeout, (int, float)):
+            self.timeout = timedelta(seconds=timeout)
+        elif isinstance(timeout, timedelta):
+            self.timeout = timeout
+        else:
+            raise TypeError("timeout must be int, float, or timedelta")
         
         # Initialize endpoint metadata
         self._initialize_endpoint_metadata()
@@ -136,6 +150,16 @@ class TableauApiClient:
         for name, value, min_val, max_val in args:
             if not (min_val <= value <= max_val):
                 raise ValueError(f"Argument '{name}' must be between {min_val} and {max_val}")
+            
+    def _is_online(self) -> bool:
+        """
+        Detect if this Tableau Server is Tableau Online.
+        Returns True if the base URL matches Tableau Online pattern.
+        """
+        hostname = getattr(self.base_url, 'hostname', '')
+        if not hostname:
+            return False
+        return bool(self._TABLEAU_ONLINE_REGEX.search(hostname))
     
     def _check_endpoint_availability(self, method_name: str = None):
         """Check if the endpoint is available for the current API version"""
@@ -150,7 +174,8 @@ class TableauApiClient:
                 raise TableauApiVersionException(method_name, required_version, self.api_version)
         
         if method_name in self._ON_PREMISE_ONLY_ENDPOINTS:
-            raise TableauOnlineNotSupportedException(method_name)
+            if self._is_online():
+                raise TableauOnlineNotSupportedException(method_name)
     
     def _build_client(self, auth_token: str = None) -> requests.Session:
         """Build a requests session"""
@@ -209,9 +234,7 @@ class TableauApiClient:
         
         return TableauRequestException(response.url, response.status_code, error_details)
     
-    def _api_request(self, full_uri: str, method: str, expected_status_code: int,
-                    cancellation_token=None, session: Optional[TableauSession] = None, 
-                    body=None) -> str:
+    def _api_request(self, full_uri: str, method: str, expected_status_code: int, session: Optional[TableauSession] = None, body=None) -> str:
         """Make API request to Tableau Server"""
         try:
             if self.log:
@@ -259,8 +282,18 @@ class TableauApiClient:
             raise
     
     def _read_response_string(self, content: str) -> str:
-        """Process response string, replacing old schema references"""
-        return content.replace("http://tableausoftware.com/api", "http://tableau.com/api")
+        """Process response string, replacing old schema references and handling namespaces"""
+        # Replace old schema references
+        cleaned_content = content.replace("http://tableausoftware.com/api", "http://tableau.com/api")
+                
+        # Remove the xmlns namespace declarations
+        cleaned_content = re.sub(r'\s+xmlns[^=]*="[^"]*"', '', cleaned_content)
+        
+        # Remove namespace prefixes from element names (e.g., ts:credentials -> credentials)
+        cleaned_content = re.sub(r'<([^:\s>]+:)?([^>\s]+)', r'<\2', cleaned_content)
+        cleaned_content = re.sub(r'</([^:\s>]+:)?([^>\s]+)', r'</\2', cleaned_content)
+        
+        return cleaned_content
     
     def _get_response_as_object(self, content: str, target_class: Type[T]) -> Optional[T]:
         """
@@ -271,8 +304,8 @@ class TableauApiClient:
             # Clean the XML content
             cleaned_content = self._read_response_string(content)
             
-            # Parse XML using xsdata parser
-            with StringIO(cleaned_content) as reader:
+            # Parse XML using xsdata parser - use BytesIO instead of StringIO
+            with BytesIO(cleaned_content.encode('utf-8')) as reader:
                 ts_response = self.xml_parser.parse(reader, TsResponse)
             
             # Search through all fields of TsResponse to find an instance of target_class
@@ -325,8 +358,8 @@ class TableauApiClient:
             # Clean the XML content
             cleaned_content = self._read_response_string(content)
             
-            # Parse XML using xsdata parser
-            with StringIO(cleaned_content) as reader:
+            # Parse XML using xsdata parser - use BytesIO instead of StringIO
+            with BytesIO(cleaned_content.encode('utf-8')) as reader:
                 ts_response = self.xml_parser.parse(reader, TsResponse)
             
             result1 = None
@@ -473,3 +506,194 @@ class TableauApiClient:
             files['tableau_file'] = ('FILE-NAME', file_stream, 'application/octet-stream')
         
         return {'files': files}
+    
+# ------------------------------------------------------------------------------------------------------------------------
+# Authentication methods for TableauApiClient
+
+    @ApiVersionAttribute(1, 0)
+    def sign_in(self, 
+                user_name: str, 
+                password: str, 
+                site_content_url: str = "", 
+                user_id_to_impersonate: Optional[str] = None) -> TableauSession:
+        """
+        Signs into Tableau Server. Available in all versions.
+        
+        Args:
+            user_name: The name of the user
+            password: The password of the user
+            site_content_url: The ContentUrl of the site to log in to. Default: ''
+            user_id_to_impersonate: The id of the user to impersonate (Optional)
+            
+        Returns:
+            TableauSession: Session object containing authentication details
+            
+        Raises:
+            TableauRequestException: If the request fails
+            ValueError: If required parameters are missing
+        """
+        self._check_endpoint_availability()
+        self._check_null_parameters(
+            ("user_name", user_name), 
+            ("password", password)
+        )
+        
+        # Create user model for impersonation if provided
+        user_model = None
+        if user_id_to_impersonate:
+            user_model = UserType()
+            user_model.id = user_id_to_impersonate
+        
+        # Create credentials object
+        credentials = TableauCredentialsType()
+        credentials.name = user_name
+        credentials.password = password
+        credentials.site = SiteType()
+        credentials.site.content_url = site_content_url
+        credentials.user = user_model
+        
+        # Build URI and make request
+        uri = self._build_uri("auth/signin")
+        request_body = self._get_object_as_request_content(credentials)
+        
+        response_content = self._api_request(
+            uri, "POST", 200, session=None, body=request_body
+        )
+        
+        # Parse response
+        credentials_response = self._get_response_as_object(response_content, TableauCredentialsType)
+        
+        # Set the username in the response (it's not returned by the API)
+        if credentials_response and credentials_response.user:
+            credentials_response.user.name = user_name
+            
+        return TableauSession(credentials_response)
+    
+    @ApiVersionAttribute(3, 7)
+    def sign_in_with_pat(self, 
+                         token_name: str, 
+                         token: str, 
+                         site_content_url: str = "", 
+                         user_id_to_impersonate: Optional[str] = None) -> TableauSession:
+        """
+        Signs into Tableau Server with a personal access token. Versions 3.7+
+        
+        Args:
+            token_name: The name of the access token
+            token: The token itself
+            site_content_url: The ContentUrl of the site to log in to. Default: ''
+            user_id_to_impersonate: The LUID of the Tableau User to impersonate. Leave None to skip impersonation
+            
+        Returns:
+            TableauSession: Session object containing authentication details
+            
+        Raises:
+            TableauRequestException: If the request fails
+            TableauApiVersionException: If API version is too low
+            ValueError: If required parameters are missing
+        """
+        self._check_endpoint_availability()
+        self._check_null_parameters(
+            ("token_name", token_name), 
+            ("token", token)
+        )
+        
+        # Create user model for impersonation if provided
+        user_model = None
+        if user_id_to_impersonate:
+            user_model = UserType()
+            user_model.id = user_id_to_impersonate
+        
+        # Create credentials object
+        credentials = TableauCredentialsType()
+        credentials.personal_access_token_name = token_name
+        credentials.personal_access_token_secret = token
+        credentials.site = SiteType()
+        credentials.site.content_url = site_content_url
+        credentials.user = user_model
+        
+        # Build URI and make request
+        uri = self._build_uri("auth/signin")
+        request_body = self._get_object_as_request_content(credentials)
+        
+        response_content = self._api_request(
+            uri, "POST", 200, session=None, body=request_body
+        )
+        
+        # Parse response
+        credentials_response = self._get_response_as_object(response_content, TableauCredentialsType)
+        
+        # Set the token name as username (it's not returned by the API)
+        if credentials_response and credentials_response.user:
+            credentials_response.user.name = token_name
+            
+        return TableauSession(credentials_response)
+    
+    @ApiVersionAttribute(1, 0)
+    def sign_out(self, session: TableauSession) -> None:
+        """
+        Signs out of Tableau Server. Available in all versions.
+        
+        Args:
+            session: The TableauSession to sign out
+            
+        Raises:
+            TableauRequestException: If the request fails
+            ValueError: If session is None
+        """
+        self._check_endpoint_availability()
+        self._check_null_parameters(("session", session))
+        
+        # Build URI and make request
+        uri = self._build_uri("auth/signout")
+        
+        self._api_request(
+            uri, "POST", 204, session=session, body=None
+        )
+    
+    @ApiVersionAttribute(2, 6)
+    @OnPremiseOnlyAttribute()
+    def switch_site(self, 
+                    session: TableauSession, 
+                    new_site_content_url: str) -> TableauSession:
+        """
+        Changes sites using specified Session. Not available in Tableau Online. Versions 2.6+
+        
+        Args:
+            session: Current TableauSession
+            new_site_content_url: Content URL of the site to switch to
+            
+        Returns:
+            TableauSession: New session object for the switched site
+            
+        Raises:
+            TableauRequestException: If the request fails
+            TableauApiVersionException: If API version is too low
+            TableauOnlineNotSupportedException: If used with Tableau Online
+            ValueError: If required parameters are missing
+        """
+        self._check_endpoint_availability()
+        self._check_null_parameters(("session", session))
+        
+        # Create site object
+        site = SiteType()
+        site.content_url = new_site_content_url
+        
+        # Build URI and make request
+        uri = self._build_uri("auth/switchsite")
+        request_body = self._get_object_as_request_content(site)
+        
+        response_content = self._api_request(
+            uri, "POST", 200, session=session, body=request_body
+        )
+        
+        # Parse response
+        credentials_response = self._get_response_as_object(response_content, TableauCredentialsType)
+        
+        # Preserve the original username
+        if credentials_response and credentials_response.user:
+            credentials_response.user.name = session.user_name
+            
+        return TableauSession(credentials_response)
+
+# ------------------------------------------------------------------------------------------------------------------------

@@ -25,7 +25,7 @@ class TableauSession:
         """
         if credentials is not None:
             self.user_id = credentials.user.id if credentials.user else None
-            self.user_name = credentials.name
+            self.user_name = credentials.user.name if credentials.user else None
             self.token = credentials.token
             self.site_id = credentials.site.id if credentials.site else None
         else:

@@ -29,7 +29,7 @@ class TableauRequestException(Exception):
     @property
     def message(self) -> str:
         """Generate the error message."""
-        ret = f"A Tableau Server exception occured. HTTP Status Code: {self.status_code.value}"
+        ret = f"A Tableau Server exception occured. HTTP Status Code: {self.status_code}"
         
         if self.has_details:
             code = self.details.get('code', 'Unknown')
