@@ -20,7 +20,7 @@ class TestTableauAuthenticationIntegration:
     TEST_PAT_TOKEN = ""
     TEST_USER_TO_IMPERSONATE = ""
     TEST_NEW_SITE_URL = ""   
-    
+
     @pytest.fixture
     def client(self):
         """Create a test client instance"""
@@ -43,12 +43,12 @@ class TestTableauAuthenticationIntegration:
             ignore_ssl_errors=False
         )
     
-    def test_sign_in_basic(self, client):
+    def test_sign_in_basic(self, client: TableauApiClient):
         """Test basic username/password sign in"""
         print(f"Testing sign in to: {self.TABLEAU_SERVER_URL}")
         
         try:
-            session = client.sign_in(
+            session = client.authentication.sign_in(
                 user_name=self.TEST_USERNAME,
                 password=self.TEST_PASSWORD,
                 site_content_url=self.TEST_SITE_URL
@@ -68,7 +68,7 @@ class TestTableauAuthenticationIntegration:
             print(f"  Token: {session.token[:10]}...")
             
             # Test sign out
-            client.sign_out(session)
+            client.authentication.sign_out(session)
             print("✓ Sign out successful!")
             
         except TableauRequestException as e:
@@ -78,12 +78,12 @@ class TestTableauAuthenticationIntegration:
             print(f"✗ Unexpected Error: {e}")
             pytest.fail(f"Unexpected error during authentication: {e}")
     
-    def test_sign_in_with_impersonation(self, client):
+    def test_sign_in_with_impersonation(self, client: TableauApiClient):
         """Test sign in with user impersonation (if supported)"""
         print(f"Testing sign in with impersonation")
         
         try:
-            session = client.sign_in(
+            session = client.authentication.sign_in(
                 user_name=self.TEST_USERNAME,
                 password=self.TEST_PASSWORD,
                 site_content_url=self.TEST_SITE_URL,
@@ -97,7 +97,7 @@ class TestTableauAuthenticationIntegration:
             print(f"  Impersonated User ID: {session.user_id}")
             
             # Clean up
-            client.sign_out(session)
+            client.authentication.sign_out(session)
             print("✓ Sign out successful!")
             
         except TableauRequestException as e:
@@ -106,12 +106,12 @@ class TestTableauAuthenticationIntegration:
         except Exception as e:
             pytest.fail(f"Unexpected error during impersonation test: {e}")
     
-    def test_sign_in_with_pat(self, client):
+    def test_sign_in_with_pat(self, client: TableauApiClient):
         """Test sign in with Personal Access Token"""
         print(f"Testing sign in with Personal Access Token")
         
         try:
-            session = client.sign_in_with_pat(
+            session = client.authentication.sign_in_with_pat(
                 token_name=self.TEST_PAT_NAME,
                 token=self.TEST_PAT_TOKEN,
                 site_content_url=self.TEST_SITE_URL
@@ -128,7 +128,7 @@ class TestTableauAuthenticationIntegration:
             print(f"  Token: {session.token[:10]}...")
             
             # Test sign out
-            client.sign_out(session)
+            client.authentication.sign_out(session)
             print("✓ Sign out successful!")
             
         except TableauApiVersionException as e:
@@ -140,12 +140,12 @@ class TestTableauAuthenticationIntegration:
         except Exception as e:
             pytest.fail(f"Unexpected error during PAT authentication: {e}")
     
-    def test_sign_in_with_pat_and_impersonation(self, client):
+    def test_sign_in_with_pat_and_impersonation(self, client: TableauApiClient):
         """Test PAT sign in with user impersonation"""
         print(f"Testing PAT sign in with impersonation")
         
         try:
-            session = client.sign_in_with_pat(
+            session = client.authentication.sign_in_with_pat(
                 token_name=self.TEST_PAT_NAME,
                 token=self.TEST_PAT_TOKEN,
                 site_content_url=self.TEST_SITE_URL,
@@ -159,7 +159,7 @@ class TestTableauAuthenticationIntegration:
             print(f"  Impersonated User ID: {session.user_id}")
             
             # Clean up
-            client.sign_out(session)
+            client.authentication.sign_out(session)
             print("✓ Sign out successful!")
             
         except TableauRequestException as e:
@@ -168,13 +168,13 @@ class TestTableauAuthenticationIntegration:
         except Exception as e:
             pytest.fail(f"Unexpected error during PAT impersonation test: {e}")
     
-    def test_switch_site(self, client):
+    def test_switch_site(self, client: TableauApiClient):
         """Test switching sites (On-Premise only)"""
         print(f"Testing site switching")
         
         try:
             # First sign in to get a session
-            session = client.sign_in(
+            session = client.authentication.sign_in(
                 user_name=self.TEST_USERNAME,
                 password=self.TEST_PASSWORD,
                 site_content_url=self.TEST_SITE_URL
@@ -184,7 +184,7 @@ class TestTableauAuthenticationIntegration:
             print(f"  Original Site ID: {session.site_id}")
             
             # Try to switch to different site
-            new_session = client.switch_site(
+            new_session = client.authentication.switch_site(
                 session=session,
                 new_site_content_url=self.TEST_NEW_SITE_URL
             )
@@ -197,7 +197,7 @@ class TestTableauAuthenticationIntegration:
             print(f"  New Site ID: {new_session.site_id}")
             
             # Clean up
-            client.sign_out(new_session)
+            client.authentication.sign_out(new_session)
             print("✓ Sign out successful!")
             
         except TableauOnlineNotSupportedException as e:
@@ -210,19 +210,19 @@ class TestTableauAuthenticationIntegration:
             print(f"✗ Site switch failed: {e}")
             # Try to clean up original session
             try:
-                client.sign_out(session)
+                client.authentication.sign_out(session)
             except:
                 pass
             pytest.fail(f"Site switch failed: {e}")
         except Exception as e:
             pytest.fail(f"Unexpected error during site switch test: {e}")
     
-    def test_pat_with_old_api_version(self, client_old_version):
+    def test_pat_with_old_api_version(self, client_old_version: TableauApiClient):
         """Test that PAT authentication fails with old API version"""
         print("Testing PAT with old API version (should fail)")
         
         with pytest.raises(TableauApiVersionException):
-            client_old_version.sign_in_with_pat(
+            client_old_version.authentication.sign_in_with_pat(
                 token_name=self.TEST_PAT_NAME,
                 token=self.TEST_PAT_TOKEN,
                 site_content_url=self.TEST_SITE_URL
@@ -230,12 +230,12 @@ class TestTableauAuthenticationIntegration:
         
         print("✓ PAT correctly rejected for API version < 3.7")
     
-    def test_invalid_credentials(self, client):
+    def test_invalid_credentials(self, client: TableauApiClient):
         """Test sign in with invalid credentials"""
         print("Testing invalid credentials (should fail)")
         
         with pytest.raises(TableauRequestException):
-            client.sign_in(
+            client.authentication.sign_in(
                 user_name="invalid_user",
                 password="invalid_password",
                 site_content_url=self.TEST_SITE_URL
@@ -243,7 +243,7 @@ class TestTableauAuthenticationIntegration:
         
         print("✓ Invalid credentials correctly rejected")
     
-    def test_sign_out_invalid_session(self, client):
+    def test_sign_out_invalid_session(self, client: TableauApiClient):
         """Test sign out with invalid session token"""
         print("Testing sign out with invalid session")
         
@@ -254,7 +254,7 @@ class TestTableauAuthenticationIntegration:
         fake_session.site_id = "fake_site_id"
         
         with pytest.raises(TableauRequestException):
-            client.sign_out(fake_session)
+            client.authentication.sign_out(fake_session)
         
         print("✓ Invalid session correctly rejected")
 
@@ -290,5 +290,5 @@ def run_auth_tests():
 
 if __name__ == "__main__":
     print("Then run: pytest test_tableau_auth_integration.py -v")
-    print("Or run manually with (simple singin nothing more): python test_tableau_auth_integration.py")
+    print("Or run manually with (simple signin nothing more): python test_tableau_auth_integration.py")
     run_auth_tests()
