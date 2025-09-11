@@ -1,5 +1,5 @@
 from typing import Optional, List, Tuple, TYPE_CHECKING
-from datetime import timedelta, datetime, time
+from datetime import datetime, time
 from client_registry import ClientRegistry
 from models.ts_api import (
     JobType, TaskExtractRefreshType, TaskType, TaskRunFlowType, ScheduleType,

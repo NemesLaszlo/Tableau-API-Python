@@ -267,8 +267,6 @@ class TableauDatasourcesClient:
             ("includeExtract", str(include_extract).lower())
         )
         
-        # Make request and get raw response
-        import requests
         with self._api_client._build_client(session.token) as http_session:
             response = http_session.get(uri, timeout=self._api_client.timeout.total_seconds())
             
@@ -277,7 +275,7 @@ class TableauDatasourcesClient:
             
             # Determine file type from content type header
             content_type = response.headers.get('Content-Type', '').lower()
-            file_type = DatasourceFileType.TDS if 'application/xml' in content_type else DatasourceFileType.TDSX
+            file_type = DatasourceFileType.tds if 'application/xml' in content_type else DatasourceFileType.tdsx
             
             # Return stream and file type
             return BytesIO(response.content), file_type
