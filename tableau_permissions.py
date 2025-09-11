@@ -1,13 +1,11 @@
-from typing import Optional, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from client_registry import ClientRegistry
 from models.ts_api import (
-    PermissionsType, DataSourceType, ProjectType, WorkbookType, ViewType,
-    GranteeCapabilitiesType, TaskType, TaskExtractRefreshType,
+    PermissionsType, DataSourceType, ProjectType, WorkbookType, GranteeCapabilitiesType, TaskType, TaskExtractRefreshType,
     CapabilityTypeName, CapabilityTypeMode
 )
 from models.tableau_session import TableauSession
 from attributes.api_version_attribute import ApiVersionAttribute
-from attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
 
 if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
