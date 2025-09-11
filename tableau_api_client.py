@@ -484,76 +484,76 @@ class TableauApiClient:
     def _get_object_as_request_content(self, obj: Any) -> str:
         """
         Convert object to XML request content.
-        Must set the appropriate field in TsRequest based on object type
+        Must set the appropriate field in TsRequest based on object type.
+        If obj is None, produce <tsRequest />.
         """
         try:
             # Create TsRequest wrapper
             ts_request = TsRequest()
-            
-            obj_set = False
-            
-            # Try to match object type to TsRequest fields by iterating through TsRequest fields
-            for field in fields(ts_request):
-                field_type = field.type
-                
-                # Handle Optional[T] types - extract the actual type
-                if hasattr(field_type, '__origin__') and field_type.__origin__ is Union:
-                    # Get non-None type from Optional
-                    non_none_args = [arg for arg in field_type.__args__ if arg is not type(None)]
-                    if non_none_args:
-                        field_type = non_none_args[0]
-                
-                # Handle List[T] types
-                if hasattr(field_type, '__origin__') and field_type.__origin__ is list:
-                    if hasattr(field_type, '__args__') and field_type.__args__:
-                        field_type = field_type.__args__[0]
-                
-                # Check if object matches this field's type
-                try:
-                    if isinstance(obj, field_type) or type(obj).__name__ == field_type.__name__:
-                        setattr(ts_request, field.name, obj)
-                        obj_set = True
-                        break
-                except (TypeError, AttributeError):
-                    continue
-            
-            if not obj_set:
-                # Fallback: try by object type name matching field names
-                obj_type_name = type(obj).__name__.lower()
-                
+
+            if obj is not None:
+                obj_set = False
+
+                # Try to match object type to TsRequest fields by iterating through TsRequest fields
                 for field in fields(ts_request):
-                    field_name = field.name.lower()
-                    # Remove common suffixes and compare
-                    obj_name_clean = obj_type_name.replace('type', '').replace('_', '')
-                    field_name_clean = field_name.replace('_', '')
-                    
-                    if (obj_name_clean in field_name_clean or 
-                        field_name_clean in obj_name_clean or
-                        field_name == obj_name_clean):
-                        setattr(ts_request, field.name, obj)
-                        obj_set = True
-                        break
-            
-            if not obj_set:
-                raise ValueError(f"Cannot map object type {type(obj).__name__} to any TsRequest field")
-            
+                    field_type = field.type
+
+                    # Handle Optional[T]
+                    if hasattr(field_type, '__origin__') and field_type.__origin__ is Union:
+                        non_none_args = [arg for arg in field_type.__args__ if arg is not type(None)]
+                        if non_none_args:
+                            field_type = non_none_args[0]
+
+                    # Handle List[T]
+                    if hasattr(field_type, '__origin__') and field_type.__origin__ is list:
+                        if hasattr(field_type, '__args__') and field_type.__args__:
+                            field_type = field_type.__args__[0]
+
+                    # Check if object matches this field's type
+                    try:
+                        if isinstance(obj, field_type) or type(obj).__name__ == field_type.__name__:
+                            setattr(ts_request, field.name, obj)
+                            obj_set = True
+                            break
+                    except (TypeError, AttributeError):
+                        continue
+
+                if not obj_set:
+                    # Fallback: try by object type name matching field names
+                    obj_type_name = type(obj).__name__.lower()
+
+                    for field in fields(ts_request):
+                        field_name = field.name.lower()
+                        obj_name_clean = obj_type_name.replace('type', '').replace('_', '')
+                        field_name_clean = field_name.replace('_', '')
+
+                        if (obj_name_clean in field_name_clean or
+                            field_name_clean in obj_name_clean or
+                            field_name == obj_name_clean):
+                            setattr(ts_request, field.name, obj)
+                            obj_set = True
+                            break
+
+                if not obj_set:
+                    raise ValueError(f"Cannot map object type {type(obj).__name__} to any TsRequest field")
+
             # Serialize to XML using xsdata serializer
             xml_content = self.xml_serializer.render(ts_request)
-            
+
             # Remove first (XML schema) tag for compatibility with old versions of API
             if xml_content.startswith('<?xml'):
                 xml_content = xml_content[xml_content.find('?>') + 2:].strip()
-            
+
             # Remove XML definitions from tsRequest
             xml_content = re.sub(r'(?<=<tsRequest )[^>]+', '', xml_content).strip()
-            
+
             # Handle self-closing tags
             match = re.search(r'<([^>]*)>$', xml_content)
             if match and not match.group(1).startswith('/'):
                 xml_content = xml_content[:-1] + '/>'
-            
+
             return xml_content
-            
+
         except Exception as e:
             if self.log:
                 self.log.error(f"Failed to serialize object to XML: {e}")

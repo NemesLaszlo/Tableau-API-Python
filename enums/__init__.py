@@ -1,4 +1,3 @@
-from .data_quality_warning_type import DataQualityWarningType
 from .datasource_file_type import DatasourceFileType
 from .defined_by import DefinedBy
 from .metadata_content_type import MetadataContentType
@@ -10,7 +9,6 @@ from .target_type import TargetType
 from .workbook_file_type import WorkbookFileType
 
 __all__ = [
-    'DataQualityWarningType',
     'DatasourceFileType', 
     'DefinedBy',
     'MetadataContentType',

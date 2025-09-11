@@ -1,10 +1,9 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from client_registry import ClientRegistry
 from models.ts_api import SiteType, TableauCredentialsType, UserType
 from models.tableau_session import TableauSession
 from attributes.api_version_attribute import ApiVersionAttribute
 from attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
