@@ -42,12 +42,12 @@ class TableauRevisionsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing or out of range
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
-        self._api_client._check_parameters_between(
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
@@ -58,13 +58,13 @@ class TableauRevisionsClient:
             ("pageNumber", str(page_number))
         ]
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/revisions", *url_params)
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/revisions", *url_params)
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response to get both objects
-        pagination_obj, revision_list_obj = self._api_client._get_response_as_objects(
+        pagination_obj, revision_list_obj = self._api_client.get_response_as_objects(
             response_content, PaginationType, RevisionListType
         )
         
@@ -94,12 +94,12 @@ class TableauRevisionsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing or out of range
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("workbook_id", workbook_id)
         )
-        self._api_client._check_parameters_between(
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
@@ -110,13 +110,13 @@ class TableauRevisionsClient:
             ("pageNumber", str(page_number))
         ]
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/revisions", *url_params)
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/revisions", *url_params)
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response to get both objects
-        pagination_obj, revision_list_obj = self._api_client._get_response_as_objects(
+        pagination_obj, revision_list_obj = self._api_client.get_response_as_objects(
             response_content, PaginationType, RevisionListType
         )
         
@@ -146,19 +146,19 @@ class TableauRevisionsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/datasources/{datasource_id}/revisions/{revision_number}/content",
             ("includeExtract", str(include_extract).lower())
         )
         
         # Get the raw response content as bytes
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, return_bytes=True
         )
         
@@ -188,19 +188,19 @@ class TableauRevisionsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("workbook_id", workbook_id)
         )
         
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/workbooks/{workbook_id}/revisions/{revision_number}/content",
             ("includeExtract", str(include_extract).lower())
         )
         
         # Get the raw response content as bytes
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, return_bytes=True
         )
         
@@ -228,15 +228,15 @@ class TableauRevisionsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/revisions/{revision_number}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/revisions/{revision_number}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session
         )
     
@@ -261,14 +261,14 @@ class TableauRevisionsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("workbook_id", workbook_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/revisions/{revision_number}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/revisions/{revision_number}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session
         )

@@ -42,8 +42,8 @@ class TableauAuthenticationClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("user_name", user_name), 
             ("password", password)
         )
@@ -63,15 +63,15 @@ class TableauAuthenticationClient:
         credentials.user = user_model
         
         # Build URI and make request
-        uri = self._api_client._build_uri("auth/signin")
-        request_body = self._api_client._get_object_as_request_content(credentials)
+        uri = self._api_client.build_uri("auth/signin")
+        request_body = self._api_client.get_object_as_request_content(credentials)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=None, body=request_body
         )
         
         # Parse response
-        credentials_response = self._api_client._get_response_as_object(response_content, TableauCredentialsType)
+        credentials_response = self._api_client.get_response_as_object(response_content, TableauCredentialsType)
         
         # Set the username in the response (it's not returned by the API)
         if credentials_response and credentials_response.user:
@@ -102,8 +102,8 @@ class TableauAuthenticationClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("token_name", token_name), 
             ("token", token)
         )
@@ -123,15 +123,15 @@ class TableauAuthenticationClient:
         credentials.user = user_model
         
         # Build URI and make request
-        uri = self._api_client._build_uri("auth/signin")
-        request_body = self._api_client._get_object_as_request_content(credentials)
+        uri = self._api_client.build_uri("auth/signin")
+        request_body = self._api_client.get_object_as_request_content(credentials)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=None, body=request_body
         )
         
         # Parse response
-        credentials_response = self._api_client._get_response_as_object(response_content, TableauCredentialsType)
+        credentials_response = self._api_client.get_response_as_object(response_content, TableauCredentialsType)
         
         # Set the token name as username (it's not returned by the API)
         if credentials_response and credentials_response.user:
@@ -151,13 +151,13 @@ class TableauAuthenticationClient:
             TableauRequestException: If the request fails
             ValueError: If session is None
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
         
         # Build URI and make request
-        uri = self._api_client._build_uri("auth/signout")
+        uri = self._api_client.build_uri("auth/signout")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "POST", 204, session=session, body=None
         )
     
@@ -182,23 +182,23 @@ class TableauAuthenticationClient:
             TableauOnlineNotSupportedException: If used with Tableau Online
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
         
         # Create site object
         site = SiteType()
         site.content_url = new_site_content_url
         
         # Build URI and make request
-        uri = self._api_client._build_uri("auth/switchsite")
-        request_body = self._api_client._get_object_as_request_content(site)
+        uri = self._api_client.build_uri("auth/switchsite")
+        request_body = self._api_client.get_object_as_request_content(site)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=session, body=request_body
         )
         
         # Parse response
-        credentials_response = self._api_client._get_response_as_object(response_content, TableauCredentialsType)
+        credentials_response = self._api_client.get_response_as_object(response_content, TableauCredentialsType)
         
         # Preserve the original username
         if credentials_response and credentials_response.user:

@@ -44,19 +44,19 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("flow_id", flow_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/{flow_id}")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/{flow_id}")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response to get both objects
-        output_steps_obj, flow_obj = self._api_client._get_response_as_objects(
+        output_steps_obj, flow_obj = self._api_client.get_response_as_objects(
             response_content, FlowOutputStepListType, FlowType
         )
         
@@ -90,9 +90,9 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing or out of range
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
-        self._api_client._check_parameters_between(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
@@ -108,13 +108,13 @@ class TableauFlowsClient:
         if sort_expression:
             url_params.append(("sort", sort_expression))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows", *url_params)
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows", *url_params)
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response to get both objects
-        pagination_obj, flow_list_obj = self._api_client._get_response_as_objects(
+        pagination_obj, flow_list_obj = self._api_client.get_response_as_objects(
             response_content, PaginationType, FlowListType
         )
         
@@ -148,25 +148,25 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id)
         )
         
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/users/{user_id}/flows",
             ("ownedBy", str(is_owner).lower()),
             ("pageSize", str(page_size)),
             ("pageNumber", str(page_number))
         )
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response to get both objects
-        pagination_obj, flow_list_obj = self._api_client._get_response_as_objects(
+        pagination_obj, flow_list_obj = self._api_client.get_response_as_objects(
             response_content, PaginationType, FlowListType
         )
         
@@ -190,19 +190,19 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("flow_id", flow_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/{flow_id}/connections")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/{flow_id}/connections")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        connection_list_obj = self._api_client._get_response_as_object(response_content, ConnectionListType)
+        connection_list_obj = self._api_client.get_response_as_object(response_content, ConnectionListType)
         return connection_list_obj.connection if connection_list_obj else []
     
     @ApiVersionAttribute(3, 3)
@@ -228,8 +228,8 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("flow_id", flow_id)
         )
@@ -243,15 +243,15 @@ class TableauFlowsClient:
             flow_update.owner = UserType()
             flow_update.owner.id = new_owner_id
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/{flow_id}")
-        request_body = self._api_client._get_object_as_request_content(flow_update)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/{flow_id}")
+        request_body = self._api_client.get_object_as_request_content(flow_update)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, FlowType)
+        return self._api_client.get_response_as_object(response_content, FlowType)
     
     @ApiVersionAttribute(3, 3)
     def update_flow_connection(self,
@@ -284,8 +284,8 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("flow_id", flow_id),
             ("connection_id", connection_id)
@@ -304,15 +304,15 @@ class TableauFlowsClient:
         if embed_password is not None:
             connection_update.embed_password = embed_password
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/{flow_id}/connections/{connection_id}")
-        request_body = self._api_client._get_object_as_request_content(connection_update)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/{flow_id}/connections/{connection_id}")
+        request_body = self._api_client.get_object_as_request_content(connection_update)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, ConnectionType)
+        return self._api_client.get_response_as_object(response_content, ConnectionType)
     
     @ApiVersionAttribute(3, 10)
     def get_flow_run(self, session: TableauSession, flow_run_id: str) -> FlowRunType:
@@ -331,19 +331,19 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("flow_run_id", flow_run_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/runs/{flow_run_id}")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/runs/{flow_run_id}")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, FlowRunType)
+        return self._api_client.get_response_as_object(response_content, FlowRunType)
     
     @ApiVersionAttribute(3, 10)
     def get_flow_runs(self, 
@@ -364,20 +364,20 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
         
         url_params = []
         if filter_expression:
             url_params.append(("filter", filter_expression))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/runs", *url_params)
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/runs", *url_params)
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        flow_run_list_obj = self._api_client._get_response_as_object(response_content, FlowRunListType)
+        flow_run_list_obj = self._api_client.get_response_as_object(response_content, FlowRunListType)
         return flow_run_list_obj.flow_runs if flow_run_list_obj else []
     
     @ApiVersionAttribute(3, 3)
@@ -397,19 +397,19 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("task_id", task_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/runFlow/{task_id}")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/runFlow/{task_id}")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        task_obj = self._api_client._get_response_as_object(response_content, TaskType)
+        task_obj = self._api_client.get_response_as_object(response_content, TaskType)
         return task_obj.flow_run if task_obj else None
     
     @ApiVersionAttribute(3, 3)
@@ -428,16 +428,16 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/runFlow")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/runFlow")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        task_list_obj = self._api_client._get_response_as_object(response_content, TaskListType)
+        task_list_obj = self._api_client.get_response_as_object(response_content, TaskListType)
         if not task_list_obj or not task_list_obj.task:
             return []
         
@@ -466,19 +466,19 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("linked_task_id", linked_task_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/linked/{linked_task_id}")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/linked/{linked_task_id}")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, LinkedTaskType)
+        return self._api_client.get_response_as_object(response_content, LinkedTaskType)
     
     @ApiVersionAttribute(3, 15)
     def get_linked_tasks(self, session: TableauSession) -> List[LinkedTaskType]:
@@ -496,16 +496,16 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/linked")
-        response_content = self._api_client._api_request(
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/linked")
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
         # Parse response
-        linked_task_list_obj = self._api_client._get_response_as_object(response_content, LinkedTaskListType)
+        linked_task_list_obj = self._api_client.get_response_as_object(response_content, LinkedTaskListType)
         return linked_task_list_obj.linked_tasks if linked_task_list_obj else []
     
     @ApiVersionAttribute(3, 3)
@@ -531,8 +531,8 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("flow_id", flow_id)
         )
@@ -543,17 +543,17 @@ class TableauFlowsClient:
         if flow_run_mode:
             url_params.append(("flowRunMode", flow_run_mode))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/flows/{flow_id}/run", *url_params)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/flows/{flow_id}/run", *url_params)
         
         # Empty request body is required for POST
-        request_body = self._api_client._get_object_as_request_content(None)
+        request_body = self._api_client.get_object_as_request_content(None)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, JobType)
+        return self._api_client.get_response_as_object(response_content, JobType)
     
     @ApiVersionAttribute(3, 3)
     def run_flow_task(self, session: TableauSession, task_id: str) -> JobType:
@@ -574,23 +574,23 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("task_id", task_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/runFlow/{task_id}/runNow")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/runFlow/{task_id}/runNow")
         
         # Empty request body is required for POST
-        request_body = self._api_client._get_object_as_request_content(None)
+        request_body = self._api_client.get_object_as_request_content(None)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, JobType)
+        return self._api_client.get_response_as_object(response_content, JobType)
     
     @ApiVersionAttribute(3, 15)
     def run_linked_task(self, session: TableauSession, task_id: str) -> LinkedTaskJobType:
@@ -610,20 +610,20 @@ class TableauFlowsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("task_id", task_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/linked/{task_id}/runNow")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/linked/{task_id}/runNow")
         
         # Empty request body is required for POST
-        request_body = self._api_client._get_object_as_request_content(None)
+        request_body = self._api_client.get_object_as_request_content(None)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, LinkedTaskJobType)
+        return self._api_client.get_response_as_object(response_content, LinkedTaskJobType)

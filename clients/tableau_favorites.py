@@ -45,8 +45,8 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("datasource_id", datasource_id),
@@ -63,15 +63,15 @@ class TableauFavoritesClient:
         favorite.datasource = datasource
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}")
-        request_body = self._api_client._get_object_as_request_content(favorite)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}")
+        request_body = self._api_client.get_object_as_request_content(favorite)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, FavoriteType)
+        return self._api_client.get_response_as_object(response_content, FavoriteType)
     
     @ApiVersionAttribute(3, 1)
     def add_project_to_favorites(self, 
@@ -96,8 +96,8 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("project_id", project_id),
@@ -114,15 +114,15 @@ class TableauFavoritesClient:
         favorite.project = project
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}")
-        request_body = self._api_client._get_object_as_request_content(favorite)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}")
+        request_body = self._api_client.get_object_as_request_content(favorite)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, FavoriteType)
+        return self._api_client.get_response_as_object(response_content, FavoriteType)
     
     @ApiVersionAttribute(2, 0)
     def add_workbook_to_favorites(self, 
@@ -147,8 +147,8 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("workbook_id", workbook_id),
@@ -165,15 +165,15 @@ class TableauFavoritesClient:
         favorite.workbook = workbook
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}")
-        request_body = self._api_client._get_object_as_request_content(favorite)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}")
+        request_body = self._api_client.get_object_as_request_content(favorite)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, FavoriteType)
+        return self._api_client.get_response_as_object(response_content, FavoriteType)
     
     @ApiVersionAttribute(2, 0)
     def add_view_to_favorites(self, 
@@ -198,8 +198,8 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("view_id", view_id),
@@ -216,15 +216,15 @@ class TableauFavoritesClient:
         favorite.view = view
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}")
-        request_body = self._api_client._get_object_as_request_content(favorite)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}")
+        request_body = self._api_client.get_object_as_request_content(favorite)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, FavoriteType)
+        return self._api_client.get_response_as_object(response_content, FavoriteType)
     
     @ApiVersionAttribute(2, 3)
     def delete_data_source_from_favorites(self, 
@@ -244,17 +244,17 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}/datasources/{datasource_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}/datasources/{datasource_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )
     
@@ -276,17 +276,17 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("project_id", project_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}/projects/{project_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}/projects/{project_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )
     
@@ -308,17 +308,17 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("workbook_id", workbook_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}/workbooks/{workbook_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}/workbooks/{workbook_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )
     
@@ -340,17 +340,17 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id),
             ("view_id", view_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}/views/{view_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}/views/{view_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )
     
@@ -373,19 +373,19 @@ class TableauFavoritesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("user_id", user_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/favorites/{user_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/favorites/{user_id}")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
         # Parse response
-        favorite_list = self._api_client._get_response_as_object(response_content, FavoriteListType)
+        favorite_list = self._api_client.get_response_as_object(response_content, FavoriteListType)
         return favorite_list.favorite if favorite_list and favorite_list.favorite else []

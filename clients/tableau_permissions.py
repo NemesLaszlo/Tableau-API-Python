@@ -43,8 +43,8 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("datasource_id", datasource_id), 
             ("grantee_capabilities", grantee_capabilities)
@@ -57,14 +57,14 @@ class TableauPermissionsClient:
         permissions.grantee_capabilities = grantee_capabilities
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/permissions")
-        request_body = self._api_client._get_object_as_request_content(permissions)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/permissions")
+        request_body = self._api_client.get_object_as_request_content(permissions)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def add_project_permissions(self, 
@@ -87,8 +87,8 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("grantee_capabilities", grantee_capabilities)
@@ -101,14 +101,14 @@ class TableauPermissionsClient:
         permissions.grantee_capabilities = grantee_capabilities
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}/permissions")
-        request_body = self._api_client._get_object_as_request_content(permissions)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}/permissions")
+        request_body = self._api_client.get_object_as_request_content(permissions)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def add_default_permissions_for_workbooks(self, 
@@ -131,8 +131,8 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("grantee_capabilities", grantee_capabilities)
@@ -143,14 +143,14 @@ class TableauPermissionsClient:
         permissions.grantee_capabilities = grantee_capabilities
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/workbooks")
-        request_body = self._api_client._get_object_as_request_content(permissions)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/workbooks")
+        request_body = self._api_client.get_object_as_request_content(permissions)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def add_default_permissions_for_data_sources(self, 
@@ -173,8 +173,8 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("grantee_capabilities", grantee_capabilities)
@@ -185,14 +185,14 @@ class TableauPermissionsClient:
         permissions.grantee_capabilities = grantee_capabilities
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/datasources")
-        request_body = self._api_client._get_object_as_request_content(permissions)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/datasources")
+        request_body = self._api_client.get_object_as_request_content(permissions)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def add_workbook_permissions(self, 
@@ -215,8 +215,8 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("workbook_id", workbook_id), 
             ("grantee_capabilities", grantee_capabilities)
@@ -229,14 +229,14 @@ class TableauPermissionsClient:
         permissions.grantee_capabilities = grantee_capabilities
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/permissions")
-        request_body = self._api_client._get_object_as_request_content(permissions)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/permissions")
+        request_body = self._api_client.get_object_as_request_content(permissions)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 8)
     def add_workbook_to_schedule(self, 
@@ -260,8 +260,8 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("workbook_id", workbook_id), 
             ("schedule_id", schedule_id), 
@@ -275,14 +275,14 @@ class TableauPermissionsClient:
         task.extract_refresh.workbook.id = workbook_id
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/schedules/{schedule_id}/workbooks")
-        request_body = self._api_client._get_object_as_request_content(task)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/schedules/{schedule_id}/workbooks")
+        request_body = self._api_client.get_object_as_request_content(task)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     # Query methods
     @ApiVersionAttribute(2, 0)
@@ -303,20 +303,20 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/permissions")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/permissions")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def query_project_permissions(self, 
@@ -336,20 +336,20 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}/permissions")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}/permissions")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def query_default_permissions_for_workbooks(self, 
@@ -369,20 +369,20 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/workbooks")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/workbooks")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def query_default_permissions_for_data_sources(self, 
@@ -402,20 +402,20 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/datasources")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}/default-permissions/datasources")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(3, 2)
     def query_view_permissions(self, 
@@ -435,20 +435,20 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("view_id", view_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/views/{view_id}/permissions")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/views/{view_id}/permissions")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     @ApiVersionAttribute(2, 0)
     def query_workbook_permissions(self, 
@@ -468,20 +468,20 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("workbook_id", workbook_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/permissions")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/workbooks/{workbook_id}/permissions")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session
         )
         
-        return self._api_client._get_response_as_object(response_content, PermissionsType)
+        return self._api_client.get_response_as_object(response_content, PermissionsType)
 
     # Delete methods for users
     @ApiVersionAttribute(2, 0)
@@ -505,19 +505,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("datasource_id", datasource_id), 
             ("user_id", user_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/datasources/{datasource_id}/permissions/users/{user_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_data_source_permission_for_group(self, 
@@ -540,19 +540,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("datasource_id", datasource_id), 
             ("group_id", group_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/datasources/{datasource_id}/permissions/groups/{group_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_project_permission_for_user(self, 
@@ -575,19 +575,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("user_id", user_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}/permissions/users/{user_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_project_permission_for_group(self, 
@@ -610,19 +610,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("group_id", group_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}/permissions/groups/{group_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_default_data_source_permission_for_user(self, 
@@ -645,19 +645,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("user_id", user_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}/default-permissions/datasources/users/{user_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_default_data_source_permission_for_group(self, 
@@ -680,19 +680,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("group_id", group_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}/default-permissions/datasources/groups/{group_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_default_workbook_permission_for_user(self, 
@@ -715,19 +715,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("user_id", user_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}/default-permissions/workbooks/users/{user_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_default_workbook_permission_for_group(self, 
@@ -750,19 +750,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("project_id", project_id), 
             ("group_id", group_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}/default-permissions/workbooks/groups/{group_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_workbook_permission_for_user(self, 
@@ -785,19 +785,19 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("workbook_id", workbook_id), 
             ("user_id", user_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/workbooks/{workbook_id}/permissions/users/{user_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)
 
     @ApiVersionAttribute(2, 0)
     def delete_workbook_permission_for_group(self, 
@@ -820,16 +820,16 @@ class TableauPermissionsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("workbook_id", workbook_id), 
             ("group_id", group_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/workbooks/{workbook_id}/permissions/groups/{group_id}/{capability_name.name}/{capability_mode.name}"
         )
         
-        self._api_client._api_request(uri, "DELETE", 204, session=session)
+        self._api_client.api_request(uri, "DELETE", 204, session=session)

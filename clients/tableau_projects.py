@@ -52,8 +52,8 @@ class TableauProjectsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("project_name", project_name)
         )
@@ -67,18 +67,18 @@ class TableauProjectsClient:
         
         # Build URI with query parameters
         query_params = [("publishSamples", str(publish_samples).lower())]
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects", 
             *query_params
         )
         
-        request_body = self._api_client._get_object_as_request_content(project)
+        request_body = self._api_client.get_object_as_request_content(project)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 201, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, ProjectType)
+        return self._api_client.get_response_as_object(response_content, ProjectType)
     
     @ApiVersionAttribute(2, 0)
     def query_projects(self,
@@ -110,9 +110,9 @@ class TableauProjectsClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing or out of range
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
-        self._api_client._check_parameters_between(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
@@ -129,16 +129,16 @@ class TableauProjectsClient:
         if sort_expression:
             query_params.append(("sort", sort_expression))
         
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects",
             *query_params
         )
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        pagination, project_list = self._api_client._get_response_as_objects(
+        pagination, project_list = self._api_client.get_response_as_objects(
             response_content, PaginationType, ProjectListType
         )
         
@@ -177,8 +177,8 @@ class TableauProjectsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("project_id", project_id)
         )
@@ -197,18 +197,18 @@ class TableauProjectsClient:
         
         # Build URI with query parameters
         query_params = [("publishSamples", str(publish_samples).lower())]
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/projects/{project_id}",
             *query_params
         )
         
-        request_body = self._api_client._get_object_as_request_content(project)
+        request_body = self._api_client.get_object_as_request_content(project)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, ProjectType)
+        return self._api_client.get_response_as_object(response_content, ProjectType)
     
     @ApiVersionAttribute(1, 0)
     def delete_project(self,
@@ -225,14 +225,14 @@ class TableauProjectsClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("project_id", project_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/projects/{project_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/projects/{project_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )

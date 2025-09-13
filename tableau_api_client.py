@@ -185,19 +185,19 @@ class TableauApiClient:
                 if hasattr(method, '_on_premise_only'):
                     self._ON_PREMISE_ONLY_ENDPOINTS.append(full_name)
 
-    def _check_null_parameters(self, *args):
+    def check_null_parameters(self, *args):
         """Check null parameters"""
         for name, value in args:
             if value is None or (isinstance(value, str) and not value.strip()):
                 raise ValueError(f"Argument {name} cannot be null")
     
-    def _check_empty_arrays(self, *args):
+    def check_empty_arrays(self, *args):
         """Check empty arrays"""
         for name, array in args:
             if hasattr(array, '__len__') and len(array) == 0:
                 raise ValueError(f"Argument array '{name}' cannot be empty")
     
-    def _check_parameters_between(self, *args):
+    def check_parameters_between(self, *args):
         """Check parameters between ranges"""
         for name, value, min_val, max_val in args:
             if not (min_val <= value <= max_val):
@@ -213,7 +213,7 @@ class TableauApiClient:
             return False
         return bool(self._TABLEAU_ONLINE_REGEX.search(hostname))
     
-    def _check_endpoint_availability(self, method_name: str = None):
+    def check_endpoint_availability(self, method_name: str = None):
         """Check if the endpoint is available for the current API version"""
         if not method_name:
             frame = inspect.currentframe().f_back
@@ -270,7 +270,7 @@ class TableauApiClient:
                 self.log.warning(f"Could not detect client namespace: {e}")
             return None
     
-    def _build_client(self, auth_token: str = None) -> requests.Session:
+    def build_client(self, auth_token: str = None) -> requests.Session:
         """Build a requests session"""
         session = requests.Session()
         
@@ -295,7 +295,7 @@ class TableauApiClient:
         
         return session
     
-    def _build_uri(self, relative_path: str, *url_params) -> str:
+    def build_uri(self, relative_path: str, *url_params) -> str:
         """Build the full API URL"""
         # Remove leading slash if present
         if relative_path.startswith('/'):
@@ -315,19 +315,19 @@ class TableauApiClient:
         
         return url
     
-    def _build_exception(self, response: requests.Response) -> TableauRequestException:
+    def build_exception(self, response: requests.Response) -> TableauRequestException:
         """Build exception from failed HTTP response"""
         error_details = None
         
         try:
-            error_details = self._get_response_as_object(response.text, type(None))  # ErrorType equivalent
+            error_details = self.get_response_as_object(response.text, type(None))  # ErrorType equivalent
         except Exception as e:
             if self.log:
                 self.log.warning(f"Failed to read Tableau Server error details: {e}")
         
         return TableauRequestException(response.url, response.status_code, error_details)
     
-    def _api_request(self, full_uri: str, method: str, expected_status_code: int, 
+    def api_request(self, full_uri: str, method: str, expected_status_code: int, 
                     session: Optional[TableauSession] = None, body=None, 
                     return_bytes: bool = False) -> Union[str, bytes]:
         """
@@ -349,7 +349,7 @@ class TableauApiClient:
                 self.log.info(f"Sending request to Tableau Server. Method: {method}, "
                              f"Url: '{full_uri}'. Expected response code: {expected_status_code}")
             
-            with self._build_client(session.token if session else None) as http_session:
+            with self.build_client(session.token if session else None) as http_session:
                 # Prepare request parameters
                 request_params = {
                     'timeout': self.timeout.total_seconds(),
@@ -369,7 +369,7 @@ class TableauApiClient:
                 response = http_session.request(method, full_uri, **request_params)
                 
                 if response.status_code != expected_status_code:
-                    raise self._build_exception(response)
+                    raise self.build_exception(response)
                 
                 if self.log:
                     self.log.info("Request successful")
@@ -405,7 +405,7 @@ class TableauApiClient:
         
         return cleaned_content
     
-    def _get_response_as_object(self, content: str, target_class: Type[T]) -> Optional[T]:
+    def get_response_as_object(self, content: str, target_class: Type[T]) -> Optional[T]:
         """
         Extract single object of specified type from response.
         Search through all TsResponse fields to find target_class instance
@@ -458,7 +458,7 @@ class TableauApiClient:
                 self.log.error(f"Failed to parse XML response: {e}")
             raise
     
-    def _get_response_as_objects(self, content: str, 
+    def get_response_as_objects(self, content: str, 
                                 target_class1: Type[T], 
                                 target_class2: Type[T2]) -> Tuple[Optional[T], Optional[T2]]:
         """
@@ -523,7 +523,7 @@ class TableauApiClient:
                 self.log.error(f"Failed to parse XML response: {e}")
             return None, None
     
-    def _get_object_as_request_content(self, obj: Any) -> str:
+    def get_object_as_request_content(self, obj: Any) -> str:
         """
         Convert object to XML request content.
         Must set the appropriate field in TsRequest based on object type.
@@ -601,7 +601,7 @@ class TableauApiClient:
                 self.log.error(f"Failed to serialize object to XML: {e}")
             raise
     
-    def _prepare_file_upload_content(self, xml_content: str, 
+    def prepare_file_upload_content(self, xml_content: str, 
                                    file_stream: Optional[BytesIO] = None) -> dict:
         """
         Prepare multipart form data for file upload.

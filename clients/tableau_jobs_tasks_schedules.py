@@ -42,15 +42,15 @@ class TableauJobsTasksSchedulesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("job_id", job_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/jobs/{job_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/jobs/{job_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "PUT", 200, session=session, body=None
         )
     
@@ -70,19 +70,19 @@ class TableauJobsTasksSchedulesClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("job_id", job_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/jobs/{job_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/jobs/{job_id}")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        return self._api_client._get_response_as_object(response_content, JobType)
+        return self._api_client.get_response_as_object(response_content, JobType)
     
     @ApiVersionAttribute(3, 1)
     def query_jobs(self, 
@@ -107,9 +107,9 @@ class TableauJobsTasksSchedulesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If parameters are invalid
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
-        self._api_client._check_parameters_between(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
@@ -122,13 +122,13 @@ class TableauJobsTasksSchedulesClient:
         if filter_expression:
             url_params.append(("filter", filter_expression))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/jobs", *url_params)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/jobs", *url_params)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        pagination, job_list = self._api_client._get_response_as_objects(
+        pagination, job_list = self._api_client.get_response_as_objects(
             response_content, PaginationType, BackgroundJobListType
         )
         
@@ -152,19 +152,19 @@ class TableauJobsTasksSchedulesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("task_id", task_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/{task_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/{task_id}")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        task = self._api_client._get_response_as_object(response_content, TaskType)
+        task = self._api_client.get_response_as_object(response_content, TaskType)
         
         if task and task.extract_refresh:
             return task.extract_refresh
@@ -187,16 +187,16 @@ class TableauJobsTasksSchedulesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If session is None
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/extractRefreshes")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/extractRefreshes")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        task_list = self._api_client._get_response_as_object(response_content, TaskListType)
+        task_list = self._api_client.get_response_as_object(response_content, TaskListType)
         
         extract_tasks = []
         flow_tasks = []
@@ -230,20 +230,20 @@ class TableauJobsTasksSchedulesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("task_id", task_id)
         )
         
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/tasks/extractRefreshes/{task_id}/runNow")
-        request_body = self._api_client._get_object_as_request_content(None)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/tasks/extractRefreshes/{task_id}/runNow")
+        request_body = self._api_client.get_object_as_request_content(None)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, JobType)
+        return self._api_client.get_response_as_object(response_content, JobType)
     
     def _create_schedule(self, 
                         session: TableauSession,
@@ -258,12 +258,12 @@ class TableauJobsTasksSchedulesClient:
         """
         Internal method to create a schedule with specified parameters.
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("name", name)
         )
-        self._api_client._check_parameters_between(
+        self._api_client.check_parameters_between(
             ("priority", priority, 1, 100)
         )
         
@@ -286,14 +286,14 @@ class TableauJobsTasksSchedulesClient:
         schedule.execution_order = execution_order
         schedule.frequency_details = frequency_details
         
-        uri = self._api_client._build_uri("schedules")
-        request_body = self._api_client._get_object_as_request_content(schedule)
+        uri = self._api_client.build_uri("schedules")
+        request_body = self._api_client.get_object_as_request_content(schedule)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 200, session=session, body=request_body
         )
         
-        return self._api_client._get_response_as_object(response_content, ScheduleType)
+        return self._api_client.get_response_as_object(response_content, ScheduleType)
     
     @ApiVersionAttribute(2, 3)
     @OnPremiseOnlyAttribute()
@@ -461,27 +461,27 @@ class TableauJobsTasksSchedulesClient:
             TableauOnlineNotSupportedException: If used with Tableau Online
             ValueError: If parameters are invalid
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("schedule_id", schedule_id)
         )
-        self._api_client._check_parameters_between(
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
         
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/schedules/{schedule_id}/extracts",
             ("pageSize", str(page_size)),
             ("pageNumber", str(page_number))
         )
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        pagination, extract_list = self._api_client._get_response_as_objects(
+        pagination, extract_list = self._api_client.get_response_as_objects(
             response_content, PaginationType, ExtractListType
         )
         
@@ -511,24 +511,24 @@ class TableauJobsTasksSchedulesClient:
             TableauOnlineNotSupportedException: If used with Tableau Online
             ValueError: If parameters are invalid
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
-        self._api_client._check_parameters_between(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
         
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             "schedules",
             ("pageSize", str(page_size)),
             ("pageNumber", str(page_number))
         )
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
-        pagination, schedule_list = self._api_client._get_response_as_objects(
+        pagination, schedule_list = self._api_client.get_response_as_objects(
             response_content, PaginationType, ScheduleListType
         )
         
@@ -551,14 +551,14 @@ class TableauJobsTasksSchedulesClient:
             TableauOnlineNotSupportedException: If used with Tableau Online
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session), 
             ("schedule_id", schedule_id)
         )
         
-        uri = self._api_client._build_uri(f"schedules/{schedule_id}")
+        uri = self._api_client.build_uri(f"schedules/{schedule_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )

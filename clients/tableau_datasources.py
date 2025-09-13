@@ -44,28 +44,28 @@ class TableauDatasourcesClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing or invalid
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id),
             ("tags_to_add", tags_to_add)
         )
-        self._api_client._check_empty_arrays(("tags_to_add", tags_to_add))
+        self._api_client.check_empty_arrays(("tags_to_add", tags_to_add))
         
         # Create tag list object
         tag_list = TagListType()
         tag_list.tag = [TagType(label=tag) for tag in tags_to_add]
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/tags")
-        request_body = self._api_client._get_object_as_request_content(tag_list)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/tags")
+        request_body = self._api_client.get_object_as_request_content(tag_list)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        response_tags = self._api_client._get_response_as_object(response_content, TagListType)
+        response_tags = self._api_client.get_response_as_object(response_content, TagListType)
         return response_tags.tag if response_tags and response_tags.tag else []
     
     @ApiVersionAttribute(1, 0)
@@ -85,17 +85,17 @@ class TableauDatasourcesClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id),
             ("tag", tag)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/tags/{tag}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/tags/{tag}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )
     
@@ -117,21 +117,21 @@ class TableauDatasourcesClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, DataSourceType)
+        return self._api_client.get_response_as_object(response_content, DataSourceType)
     
     @ApiVersionAttribute(1, 0)
     def query_data_sources(self, 
@@ -160,9 +160,9 @@ class TableauDatasourcesClient:
             TableauRequestException: If the request fails
             ValueError: If required parameters are missing or invalid
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(("session", session))
-        self._api_client._check_parameters_between(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(("session", session))
+        self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
             ("page_number", page_number, 1, float('inf'))
         )
@@ -181,14 +181,14 @@ class TableauDatasourcesClient:
             query_params.append(("sort", sort_expression))
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources", *query_params)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources", *query_params)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
         # Parse response - expecting both pagination and datasource list
-        pagination, datasource_list = self._api_client._get_response_as_objects(
+        pagination, datasource_list = self._api_client.get_response_as_objects(
             response_content, PaginationType, DataSourceListType
         )
         
@@ -214,21 +214,21 @@ class TableauDatasourcesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/connections")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/connections")
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "GET", 200, session=session, body=None
         )
         
         # Parse response
-        connection_list = self._api_client._get_response_as_object(response_content, ConnectionListType)
+        connection_list = self._api_client.get_response_as_object(response_content, ConnectionListType)
         return connection_list.connection if connection_list and connection_list.connection else []
     
     @ApiVersionAttribute(2, 0)
@@ -252,23 +252,23 @@ class TableauDatasourcesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/datasources/{datasource_id}/content",
             ("includeExtract", str(include_extract).lower())
         )
         
-        with self._api_client._build_client(session.token) as http_session:
+        with self._api_client.build_client(session.token) as http_session:
             response = http_session.get(uri, timeout=self._api_client.timeout.total_seconds())
             
             if response.status_code != 200:
-                raise self._api_client._build_exception(response)
+                raise self._api_client.build_exception(response)
             
             # Determine file type from content type header
             content_type = response.headers.get('Content-Type', '').lower()
@@ -306,8 +306,8 @@ class TableauDatasourcesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
@@ -329,15 +329,15 @@ class TableauDatasourcesClient:
             datasource.owner.id = new_owner_id
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}")
-        request_body = self._api_client._get_object_as_request_content(datasource)
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}")
+        request_body = self._api_client.get_object_as_request_content(datasource)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, DataSourceType)
+        return self._api_client.get_response_as_object(response_content, DataSourceType)
     
     @ApiVersionAttribute(2, 3)
     def update_data_source_connection(self, 
@@ -371,8 +371,8 @@ class TableauDatasourcesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id),
             ("connection_id", connection_id)
@@ -389,17 +389,17 @@ class TableauDatasourcesClient:
             connection.embed_password = embed_password
         
         # Build URI and make request
-        uri = self._api_client._build_uri(
+        uri = self._api_client.build_uri(
             f"sites/{session.site_id}/datasources/{datasource_id}/connections/{connection_id}"
         )
-        request_body = self._api_client._get_object_as_request_content(connection)
+        request_body = self._api_client.get_object_as_request_content(connection)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "PUT", 200, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, ConnectionType)
+        return self._api_client.get_response_as_object(response_content, ConnectionType)
     
     @ApiVersionAttribute(2, 8)
     def update_data_source_now(self, 
@@ -425,24 +425,24 @@ class TableauDatasourcesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/refresh")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}/refresh")
         
         # Empty body for refresh request
-        request_body = self._api_client._get_object_as_request_content(None)
+        request_body = self._api_client.get_object_as_request_content(None)
         
-        response_content = self._api_client._api_request(
+        response_content = self._api_client.api_request(
             uri, "POST", 202, session=session, body=request_body
         )
         
         # Parse response
-        return self._api_client._get_response_as_object(response_content, JobType)
+        return self._api_client.get_response_as_object(response_content, JobType)
     
     @ApiVersionAttribute(2, 0)
     def delete_data_source(self, 
@@ -462,15 +462,15 @@ class TableauDatasourcesClient:
             TableauApiVersionException: If API version is too low
             ValueError: If required parameters are missing
         """
-        self._api_client._check_endpoint_availability()
-        self._api_client._check_null_parameters(
+        self._api_client.check_endpoint_availability()
+        self._api_client.check_null_parameters(
             ("session", session),
             ("datasource_id", datasource_id)
         )
         
         # Build URI and make request
-        uri = self._api_client._build_uri(f"sites/{session.site_id}/datasources/{datasource_id}")
+        uri = self._api_client.build_uri(f"sites/{session.site_id}/datasources/{datasource_id}")
         
-        self._api_client._api_request(
+        self._api_client.api_request(
             uri, "DELETE", 204, session=session, body=None
         )
