@@ -1,6 +1,5 @@
 from typing import Optional, List, Tuple, TYPE_CHECKING
 from io import BytesIO
-from client_registry import ClientRegistry
 from enums.datasource_file_type import DatasourceFileType
 from models.ts_api import (
     TagListType, TagType, DataSourceType, DataSourceListType, 
@@ -13,8 +12,6 @@ from attributes.api_version_attribute import ApiVersionAttribute
 if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
 
-
-@ClientRegistry.register("datasources")
 class TableauDatasourcesClient:
     """Client for Tableau Server datasources operations"""
     

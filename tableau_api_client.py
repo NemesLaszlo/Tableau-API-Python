@@ -14,12 +14,20 @@ from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 
-from client_registry import ClientRegistry
 from models.ts_api import TsResponse, TsRequest
 from models.tableau_session import TableauSession
 from exceptions.tableau_api_version_exception import TableauApiVersionException
 from exceptions.tableau_online_not_supported_exception import TableauOnlineNotSupportedException
 from exceptions.tableau_request_exception import TableauRequestException
+
+from clients.tableau_authentication import TableauAuthenticationClient
+from clients.tableau_datasources import TableauDatasourcesClient
+from clients.tableau_favorites import TableauFavoritesClient
+from clients.tableau_flows import TableauFlowsClient
+from clients.tableau_jobs_tasks_schedules import TableauJobsTasksSchedulesClient
+from clients.tableau_permissions import TableauPermissionsClient
+from clients.tableau_projects import TableauProjectsClient
+from clients.tableau_revisions import TableauRevisionsClient
 
 T = TypeVar('T')
 T2 = TypeVar('T2')
@@ -36,45 +44,21 @@ class TableauApiClient:
     _MIN_VERSION_FOR_ENDPOINTS: Dict[str, Tuple[int, int]] = {}
     _ON_PREMISE_ONLY_ENDPOINTS: List[str] = []
 
+    _CLIENT_CLASSES = [
+        ('authentication', TableauAuthenticationClient),
+        ('datasources', TableauDatasourcesClient),
+        ('favorites', TableauFavoritesClient),
+        ('flows', TableauFlowsClient),
+        ('jobs_tasks_schedules', TableauJobsTasksSchedulesClient),
+        ('permissions', TableauPermissionsClient),
+        ('projects', TableauProjectsClient),
+        ('revisions', TableauRevisionsClient),
+    ]
+
     _TABLEAU_ONLINE_REGEX = re.compile(
         r"(?:\.online)?\.tableau\.com$",  # matches any Tableau Online/Cloud URL ending with ".online.tableau.com" or "tableau.com"
         re.IGNORECASE
     )
-    
-    @classmethod
-    def _initialize_endpoint_metadata(cls):
-        """Initialize endpoint metadata using the client registry."""
-        if cls._MIN_VERSION_FOR_ENDPOINTS:
-            return  # Already initialized
-          
-        # Inspect methods directly on the main class
-        for name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
-            if hasattr(method, '_min_api_version'):
-                cls._MIN_VERSION_FOR_ENDPOINTS[name] = method._min_api_version
-            if hasattr(method, '_on_premise_only'):
-                cls._ON_PREMISE_ONLY_ENDPOINTS.append(name)
-        
-        # Inspect methods on all registered client classes
-        for client_type, client_class in ClientRegistry.get_clients().items():
-            for name, method in inspect.getmembers(client_class, predicate=inspect.isfunction):
-                if name.startswith('_'):
-                    continue
-                    
-                full_name = f"{client_type}.{name}" 
-                if hasattr(method, '_min_api_version'):
-                    cls._MIN_VERSION_FOR_ENDPOINTS[full_name] = method._min_api_version
-                if hasattr(method, '_on_premise_only'):
-                    cls._ON_PREMISE_ONLY_ENDPOINTS.append(full_name)
-
-    def _initialize_client_instances(self):
-        """Initialize all registered client instances as attributes."""
-        for client_type, client_class in ClientRegistry.get_clients().items():
-            try:
-                client_instance = client_class(self)
-                setattr(self, client_type, client_instance)
-            except Exception as e:
-                if self.log:
-                    self.log.warning(f"Could not initialize {client_type} client: {e}")
     
     def __init__(self, 
                  tableau_base_uri: str, 
@@ -139,11 +123,11 @@ class TableauApiClient:
         else:
             raise TypeError("timeout must be int, float, or timedelta")
         
-        # Initialize client instances using registry
-        self._initialize_client_instances()
-        
-        # Initialize endpoint metadata
+        # Initialize endpoint metadata first
         self._initialize_endpoint_metadata()
+        
+        # Initialize client instances directly
+        self._initialize_client_instances()
         
         # Initialize XML context and parsers
         self.xml_context = XmlContext()
@@ -156,7 +140,50 @@ class TableauApiClient:
         if self.log:
             self.log.debug(f"Created TableauApiClient for tableau base url: '{tableau_base_uri}', "
                           f"api version: {api_version}")
+
+    def _initialize_client_instances(self):
+        """Initialize all client instances as attributes."""
+        try:
+            self.authentication = TableauAuthenticationClient(self)
+            self.datasources = TableauDatasourcesClient(self)
+            self.favorites = TableauFavoritesClient(self)
+            self.flows = TableauFlowsClient(self)
+            self.jobs_tasks_schedules = TableauJobsTasksSchedulesClient(self)
+            self.permissions = TableauPermissionsClient(self)
+            self.projects = TableauProjectsClient(self)
+            self.revisions = TableauRevisionsClient(self)
+            
+            if self.log:
+                self.log.debug("Initialized all client modules successfully")
+                
+        except Exception as e:
+            if self.log:
+                self.log.error(f"Failed to initialize client modules: {e}")
+            raise RuntimeError(f"Failed to initialize Tableau API client modules: {e}")
     
+    def _initialize_endpoint_metadata(self):
+        """Initialize endpoint metadata by inspecting client classes."""
+        if self._MIN_VERSION_FOR_ENDPOINTS:
+            return  # Already initialized
+        
+        # Inspect methods on the main class
+        for name, method in inspect.getmembers(self.__class__, predicate=inspect.isfunction):
+            if hasattr(method, '_min_api_version'):
+                self._MIN_VERSION_FOR_ENDPOINTS[name] = method._min_api_version
+            if hasattr(method, '_on_premise_only'):
+                self._ON_PREMISE_ONLY_ENDPOINTS.append(name)
+        
+        # Inspect methods on all client classes
+        for client_name, client_class in self._CLIENT_CLASSES:
+            for name, method in inspect.getmembers(client_class, predicate=inspect.isfunction):
+                if name.startswith('_'):
+                    continue
+                    
+                full_name = f"{client_name}.{name}"
+                if hasattr(method, '_min_api_version'):
+                    self._MIN_VERSION_FOR_ENDPOINTS[full_name] = method._min_api_version
+                if hasattr(method, '_on_premise_only'):
+                    self._ON_PREMISE_ONLY_ENDPOINTS.append(full_name)
 
     def _check_null_parameters(self, *args):
         """Check null parameters"""
@@ -189,11 +216,9 @@ class TableauApiClient:
     def _check_endpoint_availability(self, method_name: str = None):
         """Check if the endpoint is available for the current API version"""
         if not method_name:
-            # Get the calling method name
             frame = inspect.currentframe().f_back
             method_name = frame.f_code.co_name
         
-        # Determine the client namespace by inspecting the call stack
         submodule = self._detect_client_namespace()
         
         # Build the key for namespaced endpoints
@@ -213,7 +238,7 @@ class TableauApiClient:
     def _detect_client_namespace(self):
         """
         Detect which client namespace the current method call is coming from
-        by inspecting the call stack and matching against registered clients.
+        by inspecting the call stack.
         """
         try:
             # Walk up the call stack to find the client class
@@ -233,12 +258,12 @@ class TableauApiClient:
                     if calling_class == TableauApiClient:
                         continue
                     
-                    # Check if this class is registered in our client registry
-                    for client_type, client_class in ClientRegistry.get_clients().items():
+                    # Find matching client class
+                    for client_name, client_class in self._CLIENT_CLASSES:
                         if calling_class == client_class:
-                            return client_type
+                            return client_name
             
-            return None  # No client namespace detected (direct call on main class)
+            return None  # No client namespace detected
             
         except Exception as e:
             if self.log:
@@ -302,8 +327,23 @@ class TableauApiClient:
         
         return TableauRequestException(response.url, response.status_code, error_details)
     
-    def _api_request(self, full_uri: str, method: str, expected_status_code: int, session: Optional[TableauSession] = None, body=None) -> str:
-        """Make API request to Tableau Server"""
+    def _api_request(self, full_uri: str, method: str, expected_status_code: int, 
+                    session: Optional[TableauSession] = None, body=None, 
+                    return_bytes: bool = False) -> Union[str, bytes]:
+        """
+        Make API request to Tableau Server
+        
+        Args:
+            full_uri: Full URI to request
+            method: HTTP method
+            expected_status_code: Expected HTTP status code
+            session: TableauSession object
+            body: Request body
+            return_bytes: If True, return response.content (bytes), otherwise response.text (str)
+            
+        Returns:
+            Response content as str or bytes depending on return_bytes parameter
+        """
         try:
             if self.log:
                 self.log.info(f"Sending request to Tableau Server. Method: {method}, "
@@ -333,7 +373,9 @@ class TableauApiClient:
                 
                 if self.log:
                     self.log.info("Request successful")
-                return response.text
+                
+                # Return bytes or text based on parameter
+                return response.content if return_bytes else response.text
                 
         except TableauRequestException as e:
             if self.log:

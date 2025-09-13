@@ -1,5 +1,4 @@
 from typing import List, TYPE_CHECKING
-from client_registry import ClientRegistry
 from models.ts_api import (
     FavoriteType, FavoriteListType, DataSourceType, ProjectType, 
     WorkbookType, ViewType
@@ -11,7 +10,6 @@ if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
 
 
-@ClientRegistry.register("favorites")
 class TableauFavoritesClient:
     """Client for Tableau Server favorites operations"""
     

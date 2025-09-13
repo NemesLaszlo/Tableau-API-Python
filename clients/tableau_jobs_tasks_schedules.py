@@ -1,6 +1,5 @@
 from typing import Optional, List, Tuple, TYPE_CHECKING
 from datetime import datetime, time
-from client_registry import ClientRegistry
 from models.ts_api import (
     JobType, TaskExtractRefreshType, TaskType, TaskRunFlowType, ScheduleType,
     PaginationType, BackgroundJobType, ExtractType, TaskListType,
@@ -17,7 +16,6 @@ if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
 
 
-@ClientRegistry.register("jobs_tasks_schedules")
 class TableauJobsTasksSchedulesClient:
     """Client for Tableau Server jobs, tasks, and schedules operations"""
     

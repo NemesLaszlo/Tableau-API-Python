@@ -1,5 +1,4 @@
 from typing import Optional, List, Tuple, TYPE_CHECKING
-from client_registry import ClientRegistry
 from models.tableau_session import TableauSession
 from attributes.api_version_attribute import ApiVersionAttribute
 from models.ts_api import (
@@ -14,7 +13,6 @@ if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
 
 
-@ClientRegistry.register("flows")
 class TableauFlowsClient:
     """Client for Tableau Server flows operations"""
     

@@ -1,5 +1,4 @@
 from typing import Optional, TYPE_CHECKING
-from client_registry import ClientRegistry
 from models.ts_api import SiteType, TableauCredentialsType, UserType
 from models.tableau_session import TableauSession
 from attributes.api_version_attribute import ApiVersionAttribute
@@ -9,7 +8,6 @@ if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
 
 
-@ClientRegistry.register("authentication")
 class TableauAuthenticationClient:
     """Client for Tableau Server authentication operations"""
     
