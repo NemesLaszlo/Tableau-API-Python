@@ -259,7 +259,7 @@ class TableauFlowsClient:
                               flow_id: str,
                               connection_id: str,
                               server_address: Optional[str] = None,
-                              server_port: Optional[str] = None,
+                              server_port: Optional[int] = None,
                               user_name: Optional[str] = None,
                               password: Optional[str] = None,
                               embed_password: Optional[bool] = None) -> ConnectionType:

@@ -24,6 +24,6 @@ class ApiVersionAttribute:
             return func(*args, **kwargs)
         
         # Store the minimum version on the function for later use
-        wrapper._min_api_version = self.min_version
+        wrapper.min_api_version = self.min_version
         
         return wrapper

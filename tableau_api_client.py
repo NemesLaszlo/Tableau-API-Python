@@ -13,6 +13,7 @@ from xsdata.formats.dataclass.context import XmlContext
 from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
+from http import HTTPStatus
 
 from models.ts_api import TsResponse, TsRequest
 from models.tableau_session import TableauSession
@@ -168,9 +169,9 @@ class TableauApiClient:
         
         # Inspect methods on the main class
         for name, method in inspect.getmembers(self.__class__, predicate=inspect.isfunction):
-            if hasattr(method, '_min_api_version'):
-                self._MIN_VERSION_FOR_ENDPOINTS[name] = method._min_api_version
-            if hasattr(method, '_on_premise_only'):
+            if hasattr(method, 'min_api_version'):
+                self._MIN_VERSION_FOR_ENDPOINTS[name] = method.min_api_version
+            if hasattr(method, 'on_premise_only'):
                 self._ON_PREMISE_ONLY_ENDPOINTS.append(name)
         
         # Inspect methods on all client classes
@@ -180,24 +181,27 @@ class TableauApiClient:
                     continue
                     
                 full_name = f"{client_name}.{name}"
-                if hasattr(method, '_min_api_version'):
-                    self._MIN_VERSION_FOR_ENDPOINTS[full_name] = method._min_api_version
-                if hasattr(method, '_on_premise_only'):
+                if hasattr(method, 'min_api_version'):
+                    self._MIN_VERSION_FOR_ENDPOINTS[full_name] = method.min_api_version
+                if hasattr(method, 'on_premise_only'):
                     self._ON_PREMISE_ONLY_ENDPOINTS.append(full_name)
 
-    def check_null_parameters(self, *args):
+    @staticmethod
+    def check_null_parameters(*args):
         """Check null parameters"""
         for name, value in args:
             if value is None or (isinstance(value, str) and not value.strip()):
                 raise ValueError(f"Argument {name} cannot be null")
     
-    def check_empty_arrays(self, *args):
+    @staticmethod
+    def check_empty_arrays(*args):
         """Check empty arrays"""
         for name, array in args:
             if hasattr(array, '__len__') and len(array) == 0:
                 raise ValueError(f"Argument array '{name}' cannot be empty")
     
-    def check_parameters_between(self, *args):
+    @staticmethod
+    def check_parameters_between(*args):
         """Check parameters between ranges"""
         for name, value, min_val, max_val in args:
             if not (min_val <= value <= max_val):
@@ -318,14 +322,20 @@ class TableauApiClient:
     def build_exception(self, response: requests.Response) -> TableauRequestException:
         """Build exception from failed HTTP response"""
         error_details = None
-        
+
         try:
-            error_details = self.get_response_as_object(response.text, type(None))  # ErrorType equivalent
+            error_details = self.get_response_as_object(response.text, type(None))
         except Exception as e:
             if self.log:
                 self.log.warning(f"Failed to read Tableau Server error details: {e}")
-        
-        return TableauRequestException(response.url, response.status_code, error_details)
+
+        try:
+            status_code = HTTPStatus(response.status_code)
+        except ValueError:
+            # Fallback if it's not a valid HTTPStatus
+            status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+
+        return TableauRequestException(response.url, status_code, error_details)
     
     def api_request(self, full_uri: str, method: str, expected_status_code: int, 
                     session: Optional[TableauSession] = None, body=None, 
@@ -391,7 +401,8 @@ class TableauApiClient:
                 self.log.error(f"An unhandled error occured while communicating with Tableau Server. Internal error message: {e}")
             raise
     
-    def _read_response_string(self, content: str) -> str:
+    @staticmethod
+    def _read_response_string(content: str) -> str:
         """Process response string, replacing old schema references and handling namespaces"""
         # Replace old schema references
         cleaned_content = content.replace("http://tableausoftware.com/api", "http://tableau.com/api")
@@ -601,18 +612,18 @@ class TableauApiClient:
                 self.log.error(f"Failed to serialize object to XML: {e}")
             raise
     
-    def prepare_file_upload_content(self, xml_content: str, 
-                                   file_stream: Optional[BytesIO] = None) -> dict:
+    @staticmethod
+    def prepare_file_upload_content(xml_content: str,
+                                    file_stream: Optional[BytesIO] = None) -> dict:
         """
         Prepare multipart form data for file upload.
         """
-        files = {}
-        
+        files = {'request_payload': ('', xml_content, 'application/xml')}
+
         # Add XML payload with proper content-disposition
-        files['request_payload'] = ('', xml_content, 'application/xml')
-        
+
         # Add file if provided
         if file_stream is not None:
             files['tableau_file'] = ('FILE-NAME', file_stream, 'application/octet-stream')
-        
+
         return {'files': files}

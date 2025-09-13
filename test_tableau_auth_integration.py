@@ -19,7 +19,7 @@ class TestTableauAuthenticationIntegration:
     TEST_PAT_NAME = ""                        
     TEST_PAT_TOKEN = ""
     TEST_USER_TO_IMPERSONATE = ""
-    TEST_NEW_SITE_URL = ""   
+    TEST_NEW_SITE_URL = ""
 
     @pytest.fixture
     def client(self):

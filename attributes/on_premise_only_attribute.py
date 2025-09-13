@@ -14,6 +14,6 @@ class OnPremiseOnlyAttribute:
             return func(*args, **kwargs)
         
         # Mark the function as on-premise only
-        wrapper._on_premise_only = True
+        wrapper.on_premise_only = True
         
         return wrapper

@@ -12,5 +12,8 @@ dataclasses>=0.6; python_version < "3.7"
 # Typing extensions for advanced TypeVar, etc.
 typing-extensions>=4.0.0,<5.0.0
 
+# HTTP library for retrz
+urllib3~=2.5.0
+
 # Testing framework
 pytest>=7.0.0,<9.0.0

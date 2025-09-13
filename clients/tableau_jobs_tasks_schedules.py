@@ -1,5 +1,10 @@
+from datetime import time
 from typing import Optional, List, Tuple, TYPE_CHECKING
-from datetime import datetime, time
+from xsdata.models.datatype import XmlTime
+
+from attributes.api_version_attribute import ApiVersionAttribute
+from attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
+from models.tableau_session import TableauSession
 from models.ts_api import (
     JobType, TaskExtractRefreshType, TaskType, TaskRunFlowType, ScheduleType,
     PaginationType, BackgroundJobType, ExtractType, TaskListType,
@@ -8,9 +13,6 @@ from models.ts_api import (
     IntervalType, IntervalTypeMinutes, IntervalTypeHours, IntervalTypeWeekDay,
     FrequencyDetailsType
 )
-from models.tableau_session import TableauSession
-from attributes.api_version_attribute import ApiVersionAttribute
-from attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
 
 if TYPE_CHECKING:
     from tableau_api_client import TableauApiClient
@@ -136,7 +138,7 @@ class TableauJobsTasksSchedulesClient:
         return pagination, jobs
     
     @ApiVersionAttribute(2, 6)
-    def get_extract_refresh_task(self, session: TableauSession, task_id: str) -> TaskExtractRefreshType:
+    def get_extract_refresh_task(self, session: TableauSession, task_id: str) -> TaskExtractRefreshType | None:
         """
         Returns information about the specified extract refresh task. Versions 2.6+
         
@@ -244,7 +246,7 @@ class TableauJobsTasksSchedulesClient:
         )
         
         return self._api_client.get_response_as_object(response_content, JobType)
-    
+        
     def _create_schedule(self, 
                         session: TableauSession,
                         name: str, 
@@ -267,20 +269,17 @@ class TableauJobsTasksSchedulesClient:
             ("priority", priority, 1, 100)
         )
         
-        # Create frequency details
         frequency_details = FrequencyDetailsType()
-        frequency_details.start = datetime.combine(datetime(2000, 1, 1), start_time)
-        
+        frequency_details.start = XmlTime.from_time(start_time)       
         if end_time:
-            frequency_details.end = datetime.combine(datetime(2000, 1, 1), end_time)
-        
+            frequency_details.end = XmlTime.from_time(end_time)       
         if intervals:
-            frequency_details.intervals = intervals
+            frequency_details.intervals = FrequencyDetailsType.Intervals(interval=intervals)
         
         # Create schedule object
         schedule = ScheduleType()
         schedule.name = name
-        schedule.priority = str(priority)
+        schedule.priority = priority
         schedule.type_value = schedule_type
         schedule.frequency = frequency
         schedule.execution_order = execution_order
