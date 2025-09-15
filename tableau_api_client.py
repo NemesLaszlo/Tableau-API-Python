@@ -15,6 +15,8 @@ from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from http import HTTPStatus
 
+from clients.tableau_sites import TableauSitesClient
+from clients.tableau_subscriptions import TableauSubscriptionsClient
 from models.ts_api import TsResponse, TsRequest
 from models.tableau_session import TableauSession
 from exceptions.tableau_api_version_exception import TableauApiVersionException
@@ -29,6 +31,7 @@ from clients.tableau_jobs_tasks_schedules import TableauJobsTasksSchedulesClient
 from clients.tableau_permissions import TableauPermissionsClient
 from clients.tableau_projects import TableauProjectsClient
 from clients.tableau_revisions import TableauRevisionsClient
+from clients.tableau_server import TableauServerInfoClient
 
 T = TypeVar('T')
 T2 = TypeVar('T2')
@@ -54,6 +57,9 @@ class TableauApiClient:
         ('permissions', TableauPermissionsClient),
         ('projects', TableauProjectsClient),
         ('revisions', TableauRevisionsClient),
+        ('server', TableauServerInfoClient),
+        ('sites', TableauSitesClient),
+        ('subscriptions', TableauSubscriptionsClient)
     ]
 
     _TABLEAU_ONLINE_REGEX = re.compile(
@@ -153,6 +159,9 @@ class TableauApiClient:
             self.permissions = TableauPermissionsClient(self)
             self.projects = TableauProjectsClient(self)
             self.revisions = TableauRevisionsClient(self)
+            self.server = TableauServerInfoClient(self)
+            self.sites = TableauSitesClient(self)
+            self.subscriptions = TableauSubscriptionsClient(self)
             
             if self.log:
                 self.log.debug("Initialized all client modules successfully")

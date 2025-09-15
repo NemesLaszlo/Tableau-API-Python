@@ -13,6 +13,9 @@ from .tableau_jobs_tasks_schedules import TableauJobsTasksSchedulesClient
 from .tableau_permissions import TableauPermissionsClient
 from .tableau_projects import TableauProjectsClient
 from .tableau_revisions import TableauRevisionsClient
+from .tableau_server import TableauServerInfoClient
+from .tableau_sites import TableauSitesClient
+from .tableau_subscriptions import TableauSubscriptionsClient
 
 __all__ = [
     'TableauAuthenticationClient',
@@ -22,5 +25,8 @@ __all__ = [
     'TableauJobsTasksSchedulesClient',
     'TableauPermissionsClient',
     'TableauProjectsClient',
-    'TableauRevisionsClient'
+    'TableauRevisionsClient',
+    'TableauServerInfoClient',
+    'TableauSitesClient',
+    'TableauSubscriptionsClient'
 ]
