@@ -239,7 +239,7 @@ class TableauSitesClient:
         self._api_client.check_null_parameters(("session", session))
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         # Build URI and make request
@@ -292,7 +292,7 @@ class TableauSitesClient:
         self._api_client.check_null_parameters(("session", session))
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         # Build URL parameters

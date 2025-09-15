@@ -113,7 +113,7 @@ class TableauJobsTasksSchedulesClient:
         self._api_client.check_null_parameters(("session", session))
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         url_params = [
@@ -467,7 +467,7 @@ class TableauJobsTasksSchedulesClient:
         )
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         uri = self._api_client.build_uri(
@@ -514,7 +514,7 @@ class TableauJobsTasksSchedulesClient:
         self._api_client.check_null_parameters(("session", session))
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         uri = self._api_client.build_uri(

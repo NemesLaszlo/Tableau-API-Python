@@ -49,7 +49,7 @@ class TableauRevisionsClient:
         )
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         # Build query parameters
@@ -101,7 +101,7 @@ class TableauRevisionsClient:
         )
         self._api_client.check_parameters_between(
             ("page_size", page_size, 1, 1000),
-            ("page_number", page_number, 1, float('inf'))
+            ("page_number", page_number, 1, 2147483647)
         )
         
         # Build query parameters

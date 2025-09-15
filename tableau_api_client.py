@@ -14,15 +14,12 @@ from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from http import HTTPStatus
-
-from clients.tableau_sites import TableauSitesClient
-from clients.tableau_subscriptions import TableauSubscriptionsClient
+from clients.tableau_publishing import TableauPublishingClient
 from models.ts_api import TsResponse, TsRequest
 from models.tableau_session import TableauSession
 from exceptions.tableau_api_version_exception import TableauApiVersionException
 from exceptions.tableau_online_not_supported_exception import TableauOnlineNotSupportedException
 from exceptions.tableau_request_exception import TableauRequestException
-
 from clients.tableau_authentication import TableauAuthenticationClient
 from clients.tableau_datasources import TableauDatasourcesClient
 from clients.tableau_favorites import TableauFavoritesClient
@@ -32,6 +29,9 @@ from clients.tableau_permissions import TableauPermissionsClient
 from clients.tableau_projects import TableauProjectsClient
 from clients.tableau_revisions import TableauRevisionsClient
 from clients.tableau_server import TableauServerInfoClient
+from clients.tableau_sites import TableauSitesClient
+from clients.tableau_subscriptions import TableauSubscriptionsClient
+from clients.tableau_users_groups import TableauUsersGroupsClient
 
 T = TypeVar('T')
 T2 = TypeVar('T2')
@@ -59,7 +59,9 @@ class TableauApiClient:
         ('revisions', TableauRevisionsClient),
         ('server', TableauServerInfoClient),
         ('sites', TableauSitesClient),
-        ('subscriptions', TableauSubscriptionsClient)
+        ('subscriptions', TableauSubscriptionsClient),
+        ('users_groups', TableauUsersGroupsClient),
+        ('publishing', TableauPublishingClient),
     ]
 
     _TABLEAU_ONLINE_REGEX = re.compile(
@@ -162,6 +164,8 @@ class TableauApiClient:
             self.server = TableauServerInfoClient(self)
             self.sites = TableauSitesClient(self)
             self.subscriptions = TableauSubscriptionsClient(self)
+            self.users_groups = TableauUsersGroupsClient(self)
+            self.publishing = TableauPublishingClient(self)
             
             if self.log:
                 self.log.debug("Initialized all client modules successfully")
