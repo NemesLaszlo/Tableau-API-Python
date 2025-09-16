@@ -360,7 +360,7 @@ class TableauPermissionsClient:
         
         Args:
             session: TableauSession object
-            project_id: The ID of the project (Note: C# version uses workbook_id but endpoint suggests project_id)
+            project_id: The ID of the project
             
         Returns:
             PermissionsType: The default permissions for workbooks in the project
@@ -393,7 +393,7 @@ class TableauPermissionsClient:
         
         Args:
             session: TableauSession object
-            project_id: The ID of the project (Note: C# version uses datasource_id but endpoint suggests project_id)
+            project_id: The ID of the project
             
         Returns:
             PermissionsType: The default permissions for data sources in the project

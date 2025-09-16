@@ -14,7 +14,6 @@ from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from http import HTTPStatus
-from clients.tableau_publishing import TableauPublishingClient
 from models.ts_api import TsResponse, TsRequest
 from models.tableau_session import TableauSession
 from exceptions.tableau_api_version_exception import TableauApiVersionException
@@ -32,6 +31,8 @@ from clients.tableau_server import TableauServerInfoClient
 from clients.tableau_sites import TableauSitesClient
 from clients.tableau_subscriptions import TableauSubscriptionsClient
 from clients.tableau_users_groups import TableauUsersGroupsClient
+from clients.tableau_publishing import TableauPublishingClient
+from clients.tableau_workbooks_views import TableauWorkbooksViewsClient
 
 T = TypeVar('T')
 T2 = TypeVar('T2')
@@ -62,6 +63,7 @@ class TableauApiClient:
         ('subscriptions', TableauSubscriptionsClient),
         ('users_groups', TableauUsersGroupsClient),
         ('publishing', TableauPublishingClient),
+        ('workbooks_views', TableauWorkbooksViewsClient)
     ]
 
     _TABLEAU_ONLINE_REGEX = re.compile(
@@ -166,6 +168,7 @@ class TableauApiClient:
             self.subscriptions = TableauSubscriptionsClient(self)
             self.users_groups = TableauUsersGroupsClient(self)
             self.publishing = TableauPublishingClient(self)
+            self.worbooks_views = TableauWorkbooksViewsClient(self)
             
             if self.log:
                 self.log.debug("Initialized all client modules successfully")
