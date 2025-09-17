@@ -1,3 +1,4 @@
+from datetime import timedelta
 import pytest
 import logging
 
@@ -28,8 +29,8 @@ class TestTableauAuthenticationIntegration:
             tableau_base_uri=self.TABLEAU_SERVER_URL,
             api_version="3.7",
             logger=logging.getLogger("test"),
-            timeout=60,
-            ignore_ssl_errors=False  # Set to False in production
+            timeout=timedelta(seconds=60),
+            ignore_ssl_errors=False
         )
     
     @pytest.fixture
@@ -39,7 +40,7 @@ class TestTableauAuthenticationIntegration:
             tableau_base_uri=self.TABLEAU_SERVER_URL,
             api_version="2.0",
             logger=logging.getLogger("test"),
-            timeout=60,
+            timeout=timedelta(seconds=60),
             ignore_ssl_errors=False
         )
     

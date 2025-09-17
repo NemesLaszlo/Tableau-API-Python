@@ -168,7 +168,7 @@ class TableauApiClient:
             self.subscriptions = TableauSubscriptionsClient(self)
             self.users_groups = TableauUsersGroupsClient(self)
             self.publishing = TableauPublishingClient(self)
-            self.worbooks_views = TableauWorkbooksViewsClient(self)
+            self.workbooks_views = TableauWorkbooksViewsClient(self)
             
             if self.log:
                 self.log.debug("Initialized all client modules successfully")
