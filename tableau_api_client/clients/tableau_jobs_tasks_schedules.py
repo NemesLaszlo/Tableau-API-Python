@@ -2,10 +2,10 @@ from datetime import time
 from typing import Optional, List, Tuple, TYPE_CHECKING
 from xsdata.models.datatype import XmlTime
 
-from attributes.api_version_attribute import ApiVersionAttribute
-from attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
-from models.tableau_session import TableauSession
-from models.ts_api import (
+from tableau_api_client.attributes.api_version_attribute import ApiVersionAttribute
+from tableau_api_client.attributes.on_premise_only_attribute import OnPremiseOnlyAttribute
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.models.ts_api import (
     JobType, TaskExtractRefreshType, TaskType, TaskRunFlowType, ScheduleType,
     PaginationType, BackgroundJobType, ExtractType, TaskListType,
     BackgroundJobListType, ExtractListType, ScheduleListType,
@@ -15,7 +15,7 @@ from models.ts_api import (
 )
 
 if TYPE_CHECKING:
-    from tableau_api_client import TableauApiClient
+    from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TableauJobsTasksSchedulesClient:

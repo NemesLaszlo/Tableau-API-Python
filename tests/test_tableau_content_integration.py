@@ -1,12 +1,17 @@
+import sys
+import os
+
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
 import pytest
 import logging
 from datetime import datetime, timedelta
 
-
-from exceptions.tableau_api_version_exception import TableauApiVersionException
-from exceptions.tableau_request_exception import TableauRequestException
-from models.tableau_session import TableauSession
-from tableau_api_client import TableauApiClient
+from tableau_api_client.exceptions.tableau_api_version_exception import TableauApiVersionException
+from tableau_api_client.exceptions.tableau_request_exception import TableauRequestException
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TestTableauContentIntegration:

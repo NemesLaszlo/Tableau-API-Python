@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
-from models.ts_api import ServerInfo
-from attributes.api_version_attribute import ApiVersionAttribute
+from tableau_api_client.models.ts_api import ServerInfo
+from tableau_api_client.attributes.api_version_attribute import ApiVersionAttribute
 
 if TYPE_CHECKING:
-    from tableau_api_client import TableauApiClient
+    from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TableauServerInfoClient:

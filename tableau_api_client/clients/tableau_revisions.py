@@ -1,11 +1,11 @@
 from typing import List, Tuple, TYPE_CHECKING
 from io import BytesIO
-from models.tableau_session import TableauSession
-from attributes.api_version_attribute import ApiVersionAttribute
-from models.ts_api import PaginationType, RevisionType, RevisionListType
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.attributes.api_version_attribute import ApiVersionAttribute
+from tableau_api_client.models.ts_api import PaginationType, RevisionType, RevisionListType
 
 if TYPE_CHECKING:
-    from tableau_api_client import TableauApiClient
+    from tableau_api_client.tableau_api_client import TableauApiClient
 
 class TableauRevisionsClient:
     """Client for Tableau Server revisions operations"""

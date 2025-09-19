@@ -1,12 +1,18 @@
+import sys
+import os
+
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
 from datetime import timedelta
 import pytest
 import logging
 
-from tableau_api_client import TableauApiClient
-from models.tableau_session import TableauSession
-from exceptions.tableau_api_version_exception import TableauApiVersionException
-from exceptions.tableau_online_not_supported_exception import TableauOnlineNotSupportedException
-from exceptions.tableau_request_exception import TableauRequestException
+from tableau_api_client.exceptions.tableau_api_version_exception import TableauApiVersionException
+from tableau_api_client.exceptions.tableau_online_not_supported_exception import TableauOnlineNotSupportedException
+from tableau_api_client.exceptions.tableau_request_exception import TableauRequestException
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TestTableauAuthenticationIntegration:

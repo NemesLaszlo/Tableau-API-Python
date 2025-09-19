@@ -1,7 +1,7 @@
 from typing import Optional, List, Tuple, TYPE_CHECKING
-from models.tableau_session import TableauSession
-from attributes.api_version_attribute import ApiVersionAttribute
-from models.ts_api import (
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.attributes.api_version_attribute import ApiVersionAttribute
+from tableau_api_client.models.ts_api import (
     FlowType, FlowOutputStepType, FlowOutputStepListType, FlowListType,
     PaginationType, ConnectionType, ConnectionListType, FlowRunType,
     FlowRunListType, TaskRunFlowType, TaskType, TaskListType,
@@ -10,7 +10,7 @@ from models.ts_api import (
 )
 
 if TYPE_CHECKING:
-    from tableau_api_client import TableauApiClient
+    from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TableauFlowsClient:

@@ -1,13 +1,13 @@
 from typing import List, TYPE_CHECKING
-from models.ts_api import (
+from tableau_api_client.models.ts_api import (
     PermissionsType, DataSourceType, ProjectType, WorkbookType, GranteeCapabilitiesType, TaskType, TaskExtractRefreshType,
     CapabilityTypeName, CapabilityTypeMode
 )
-from models.tableau_session import TableauSession
-from attributes.api_version_attribute import ApiVersionAttribute
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.attributes.api_version_attribute import ApiVersionAttribute
 
 if TYPE_CHECKING:
-    from tableau_api_client import TableauApiClient
+    from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TableauPermissionsClient:

@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tableau_api_client"
+version = "1.0.1"
+description = "Python client for Tableau Server REST API"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+authors = [
+    {name = "Laszlo Nemes", email = "wow.laszlo@gmail.com"}
+]
+keywords = ["tableau", "api", "rest", "client", "server"]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Office/Business",
+]
+dependencies = [
+    "requests>=2.28.0,<3.0.0",
+    "xsdata[lxml]>=23.8,<25.0.0",
+    "typing-extensions>=4.0.0,<5.0.0",
+    "urllib3>=2.5.0,<3.0.0"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0,<9.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/NemesLaszlo/Tableau-API-Python"
+Repository = "https://github.com/NemesLaszlo/Tableau-API-Python"
+Documentation = "https://github.com/NemesLaszlo/Tableau-API-Python"
+"Bug Reports" = "https://github.com/NemesLaszlo/Tableau-API-Python/issues"
+
+[tool.setuptools]
+packages = ["tableau_api_client", "tableau_api_client.models", "tableau_api_client.exceptions", "tableau_api_client.enums", "tableau_api_client.clients", "tableau_api_client.attributes"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"tableau_api_client" = ["py.typed"]

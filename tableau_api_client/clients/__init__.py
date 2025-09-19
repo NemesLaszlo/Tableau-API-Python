@@ -16,6 +16,9 @@ from .tableau_revisions import TableauRevisionsClient
 from .tableau_server import TableauServerInfoClient
 from .tableau_sites import TableauSitesClient
 from .tableau_subscriptions import TableauSubscriptionsClient
+from .tableau_publishing import TableauPublishingClient
+from .tableau_users_groups import TableauUsersGroupsClient
+from .tableau_workbooks_views import TableauWorkbooksViewsClient
 
 __all__ = [
     'TableauAuthenticationClient',
@@ -28,5 +31,8 @@ __all__ = [
     'TableauRevisionsClient',
     'TableauServerInfoClient',
     'TableauSitesClient',
-    'TableauSubscriptionsClient'
+    'TableauSubscriptionsClient',
+    'TableauPublishingClient',
+    'TableauUsersGroupsClient',
+    'TableauWorkbooksViewsClient'
 ]

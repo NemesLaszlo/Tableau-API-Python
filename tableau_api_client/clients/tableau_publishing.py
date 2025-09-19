@@ -1,16 +1,16 @@
 from typing import Optional, List, TYPE_CHECKING
 from io import BytesIO
-from models.ts_api import (
+from tableau_api_client.models.ts_api import (
     FileUploadType, DataSourceType, WorkbookType, ProjectType,
     ConnectionCredentialsType, ConnectionType
 )
-from models.tableau_session import TableauSession
-from enums.datasource_file_type import DatasourceFileType
-from enums.workbook_file_type import WorkbookFileType
-from attributes.api_version_attribute import ApiVersionAttribute
+from tableau_api_client.models.tableau_session import TableauSession
+from tableau_api_client.enums.datasource_file_type import DatasourceFileType
+from tableau_api_client.enums.workbook_file_type import WorkbookFileType
+from tableau_api_client.attributes.api_version_attribute import ApiVersionAttribute
 
 if TYPE_CHECKING:
-    from tableau_api_client import TableauApiClient
+    from tableau_api_client.tableau_api_client import TableauApiClient
 
 
 class TableauPublishingClient:
