@@ -7,7 +7,7 @@ A comprehensive Python client library for the Tableau Server REST API, providing
 - **Complete API Coverage**: Support for all major Tableau Server REST API endpoints
 - **Type Safety**: Full type hints and auto-generated models from Tableau's API specification
 - **Authentication Management**: Username/password and Personal Access Token (PAT) authentication
-- **Version Compatibility**: Support for multiple Tableau API versions (2.0 - 3.23+)
+- **Version Compatibility**: Support for multiple Tableau API versions
 - **Pagination Support**: Built-in pagination handling for large result sets
 - **Error Handling**: Comprehensive exception handling with detailed error messages
 - **Content Management**: Query, filter, and manage workbooks, data sources, projects, users, and more
@@ -17,7 +17,7 @@ A comprehensive Python client library for the Tableau Server REST API, providing
 ## Installation
 
 ```bash
-pip install tableau_api_client
+pip install tableau-api-client
 ```
 
 ## Quick Start
@@ -314,7 +314,7 @@ except TableauApiVersionException as e:
 
 - Tableau Server 2018.1 and later
 - Tableau Online (Cloud)
-- API versions 2.0 through 3.23+
+- API versions
 
 ## Requirements
 
